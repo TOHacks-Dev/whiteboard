@@ -91,7 +91,6 @@ body {
 .colorFormPopup {
     display: none;
     position: fixed;
-    background-color: #f4f4f4;
     top: 50;
     left: 50px;
     border: none;
