@@ -26,6 +26,11 @@ let allPoints = [];
 let ids = [];
 
 
+let oldXOffset = 0;
+let oldYOffset = 0;
+let xOffset = 0;
+let yOffset = 0;
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
@@ -95,6 +100,7 @@ function changeTool(toolClicked) {
     document.getElementById("circle").className = "";
     document.getElementById("ellipse").className = "";
     document.getElementById("polygon").className = "";
+    document.getElementById("hand").className = "";
     document.getElementById(toolClicked).className = "selected";
     currentTool = toolClicked;
 }
@@ -105,14 +111,6 @@ function getMousePosition(x, y) {
         x: (x - canvasSizeData.left) * (canvas.width / canvasSizeData.width),
         y: (y - canvasSizeData.top) * (canvas.height / canvasSizeData.height)
     };
-}
-
-function saveCanvasImage() {
-    savedImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-}
-
-function redrawCanvasImage() {
-    ctx.putImageData(savedImageData, 0, 0);
 }
 
 function updateRubberbandSizeData(loc) {
@@ -180,9 +178,9 @@ function getPolygon(shouldDraw) {
         }
         ctx.closePath();
     } else {
-        points = [polygonPoints[0].x, polygonPoints[0].y];
+        points = [polygonPoints[0].x - xOffset, polygonPoints[0].y - yOffset];
         for (let i = 1; i < polygonSides; i++) {
-            points.push(polygonPoints[i].x, polygonPoints[i].y)
+            points.push(polygonPoints[i].x - xOffset, polygonPoints[i].y - yOffset)
         }
     }
 
@@ -225,8 +223,8 @@ function updateRubberbandOnMove(loc) {
 
 function addBrushPoint(x, y, mouseDown) {
     currentStroke["points"].push({
-        "x": x,
-        "y": y,
+        "x": x - xOffset,
+        "y": y - yOffset,
         "mDown": mouseDown
     });
 }
@@ -238,12 +236,12 @@ function drawCur() {
         ctx.beginPath();
 
         if (currentStroke["points"][j]["mDown"]) {
-            ctx.moveTo(currentStroke["points"][j - 1]["x"], currentStroke["points"][j - 1]["y"]);
+            ctx.moveTo(currentStroke["points"][j - 1]["x"] + xOffset, currentStroke["points"][j - 1]["y"] + yOffset);
         } else {
-            ctx.moveTo(currentStroke["points"][j]["x"] - 1, currentStroke["points"][j]["y"]);
+            ctx.moveTo(currentStroke["points"][j]["x"] - 1 + xOffset, currentStroke["points"][j]["y"] + yOffset);
         }
 
-        ctx.lineTo(currentStroke["points"][j]["x"], currentStroke["points"][j]["y"]);
+        ctx.lineTo(currentStroke["points"][j]["x"] + xOffset, currentStroke["points"][j]["y"] + yOffset);
         ctx.closePath();
         ctx.stroke();
     }
@@ -261,35 +259,35 @@ function draw() {
                     ctx.beginPath();
 
                     if (allPoints[i]["points"][j]["mDown"]) {
-                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"], allPoints[i]["points"][j - 1]["y"]);
+                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"] + xOffset, allPoints[i]["points"][j - 1]["y"] + yOffset);
                     } else {
-                        ctx.moveTo(allPoints[i]["points"][j]["x"] - 1, allPoints[i]["points"][j]["y"]);
+                        ctx.moveTo(allPoints[i]["points"][j]["x"] - 1 + xOffset, allPoints[i]["points"][j]["y"] + yOffset);
                     }
 
-                    ctx.lineTo(allPoints[i]["points"][j]["x"], allPoints[i]["points"][j]["y"]);
+                    ctx.lineTo(allPoints[i]["points"][j]["x"] + xOffset, allPoints[i]["points"][j]["y"] + yOffset);
                     ctx.closePath();
                     ctx.stroke();
                 }
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
-                ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
-                ctx.lineTo(allPoints[i]["points"][2], allPoints[i]["points"][3]);
+                ctx.moveTo(allPoints[i]["points"][0] + xOffset, allPoints[i]["points"][1] + yOffset);
+                ctx.lineTo(allPoints[i]["points"][2] + xOffset, allPoints[i]["points"][3] + yOffset);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "rectangle") {
-                ctx.strokeRect(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3]);
+                ctx.strokeRect(allPoints[i]["points"][0] + xOffset, allPoints[i]["points"][1] + yOffset, allPoints[i]["points"][2], allPoints[i]["points"][3]);
             } else if (allPoints[i]["shape"] == "circle") {
                 ctx.beginPath();
-                ctx.arc(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4]);
+                ctx.arc(allPoints[i]["points"][0] + xOffset, allPoints[i]["points"][1] + yOffset, allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "ellipse") {
                 ctx.beginPath();
-                ctx.ellipse(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
+                ctx.ellipse(allPoints[i]["points"][0] + xOffset, allPoints[i]["points"][1] + yOffset, allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "polygon") {
                 ctx.beginPath();
-                ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
+                ctx.moveTo(allPoints[i]["points"][0] + xOffset, allPoints[i]["points"][1] + yOffset);
                 for (let j = 2; j < allPoints[i]["points"].length; j += 2) {
-                    ctx.lineTo(allPoints[i]["points"][j], allPoints[i]["points"][j + 1]);
+                    ctx.lineTo(allPoints[i]["points"][j] + xOffset, allPoints[i]["points"][j + 1] + yOffset);
                 }
                 ctx.closePath();
                 ctx.stroke();
@@ -301,10 +299,11 @@ function draw() {
 function reactToMouseDown(e) {
     canvas.style.cursor = "crosshair";
     loc = getMousePosition(e.clientX, e.clientY);
-    saveCanvasImage();
     mousedown.x = loc.x;
     mousedown.y = loc.y;
     dragging = true;
+    oldXOffset = xOffset;
+    oldYOffset = yOffset;
 
     if (currentTool === "brush") {
         usingBrush = true;
@@ -327,11 +326,15 @@ function reactToMouseMove(e) {
         if (loc.x > 0 && loc.x < canvasWidth && loc.y > 0 && loc.y < canvasHeight) {
             addBrushPoint(loc.x, loc.y, true);
         }
-        redrawCanvasImage();
+        draw();
         drawCur();
+    } else if (currentTool == "hand" && dragging) {
+        xOffset = loc.x - mousedown.x + oldXOffset;
+        yOffset = loc.y - mousedown.y + oldYOffset;
+        draw();
     } else {
         if (dragging) {
-            redrawCanvasImage();
+            draw();
             updateRubberbandOnMove(loc);
         }
     }
@@ -340,38 +343,41 @@ function reactToMouseMove(e) {
 function reactToMouseUp(e) {
     canvas.style.cursor = "default";
     loc = getMousePosition(e.clientX, e.clientY);
-    redrawCanvasImage();
+    draw()
     updateRubberbandOnMove(loc);
 
     let points = []
 
-    if (currentTool == "brush") {
-        points = currentStroke["points"];
-    } else if (currentTool == "line") {
-        points = [mousedown.x, mousedown.y, loc.x, loc.y];
-    } else if (currentTool == "rectangle") {
-        points = [shapeBoundingBox.left, shapeBoundingBox.top, shapeBoundingBox.width, shapeBoundingBox.height];
-    } else if (currentTool == "circle") {
-        points = [mousedown.x, mousedown.y, shapeBoundingBox.width, 0, Math.PI * 2];
-    } else if (currentTool == "ellipse") {
-        points = [mousedown.x, mousedown.y, shapeBoundingBox.width / 2, shapeBoundingBox.height / 2, Math.PI / 4, 0, Math.PI * 2];
-    } else if (currentTool == "polygon") {
-        points = getPolygon(false);
-    }
     dragging = false;
     usingBrush = false;
 
-    ids.push(uuidv4());
+    if (currentTool == "brush") {
+        points = currentStroke["points"];
+    } else if (currentTool == "line") {
+        points = [mousedown.x - xOffset, mousedown.y - yOffset, loc.x - xOffset, loc.y - yOffset];
+    } else if (currentTool == "rectangle") {
+        points = [shapeBoundingBox.left - xOffset, shapeBoundingBox.top - yOffset, shapeBoundingBox.width, shapeBoundingBox.height];
+    } else if (currentTool == "circle") {
+        points = [mousedown.x - xOffset, mousedown.y - yOffset, shapeBoundingBox.width, 0, Math.PI * 2];
+    } else if (currentTool == "ellipse") {
+        points = [mousedown.x - xOffset, mousedown.y - yOffset, shapeBoundingBox.width / 2, shapeBoundingBox.height / 2, Math.PI / 4, 0, Math.PI * 2];
+    } else if (currentTool == "polygon") {
+        points = getPolygon(false);
+    }
 
-    allPoints.push({
-        "shape": currentTool,
-        "id": ids[ids.length - 1],
-        "strokeWeight": lineWidth,
-        "colour": strokeColor,
-        "points": points
-    });
+    if (currentTool != "hand") {
+        ids.push(uuidv4());
 
-    push();
+        allPoints.push({
+            "shape": currentTool,
+            "id": ids[ids.length - 1],
+            "strokeWeight": lineWidth,
+            "colour": strokeColor,
+            "points": points
+        });
+    
+        push();
+    }
 }
 
 function saveImage() {
