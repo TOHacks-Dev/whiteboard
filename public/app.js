@@ -400,10 +400,6 @@ function undo() {
     if (ids.length > 0) {
         pop();
         ids.pop();
-    }
-    if (brushPoints.length > 0) {
-        //pop();
-        brushPoints.pop();
         draw();
     }
 }
