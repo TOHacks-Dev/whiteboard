@@ -16,6 +16,7 @@ let canvasHeight = 1000;
 let usingBrush = false;
 let brushXPoints = [];
 let brushYPoints = [];
+let brushPoints = [];
 let brushDownPos = [];
 
 class ShapeBoundingBox {
@@ -181,21 +182,44 @@ function updateRubberbandOnMove(loc) {
 function addBrushPoint(x, y, mouseDown) {
     brushXPoints.push(x);
     brushYPoints.push(y);
+    brushPoints[brushPoints.length - 1].push({
+        "x": x,
+        "y": y,
+        "mDown": mouseDown
+    });
     brushDownPos.push(mouseDown);
 }
 
 function drawBrush() {
-    for (let i = 1; i < brushXPoints.length; i++) {
-        ctx.beginPath();
+    // for (let i = 1; i < brushXPoints.length; i++) {
+    //     ctx.beginPath();
 
-        if (brushDownPos[i]) {
-            ctx.moveTo(brushXPoints[i - 1], brushYPoints[i - 1]);
-        } else {
-            ctx.moveTo(brushXPoints[i] - 1, brushYPoints[i]);
+    //     if (brushDownPos[i]) {
+    //         ctx.moveTo(brushXPoints[i - 1], brushYPoints[i - 1]);
+    //     } else {
+    //         ctx.moveTo(brushXPoints[i] - 1, brushYPoints[i]);
+    //     }
+    //     ctx.lineTo(brushXPoints[i], brushYPoints[i]);
+    //     ctx.closePath();
+    //     ctx.stroke();
+    // }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < brushPoints.length; ++i) {
+        for (let j = 1; j < brushPoints[i].length; ++j) {
+            ctx.beginPath();
+
+            if (brushPoints[i][j]["mDown"]) {
+                ctx.moveTo(brushPoints[i][j - 1]["x"], brushPoints[i][j - 1]["y"]);
+            } else {
+                ctx.moveTo(brushPoints[i][j]["x"] - 1, brushPoints[i][j]["y"]);
+            }
+
+            ctx.lineTo(brushPoints[i][j]["x"], brushPoints[i][j]["y"]);
+            ctx.closePath();
+            ctx.stroke();
         }
-        ctx.lineTo(brushXPoints[i], brushYPoints[i]);
-        ctx.closePath();
-        ctx.stroke();
     }
 }
 
@@ -209,6 +233,7 @@ function reactToMouseDown(e) {
 
     if (currentTool === "brush") {
         usingBrush = true;
+        brushPoints.push([]);
         addBrushPoint(loc.x, loc.y);
     }
 };
@@ -253,6 +278,18 @@ function openImage() {
         ctx.drawImage(img, 0, 0);
     }
     img.src = "whiteboard.png";
+}
+
+function undo() {
+    console.log("POPPING");
+    console.log(brushPoints);
+    if (brushPoints.length > 0) {
+        console.log("IN");
+        brushPoints.pop();
+        drawBrush();
+    }
+    console.log(brushPoints);
+    console.log("DONE");
 }
 
 document.addEventListener("DOMContentLoaded", event => {
