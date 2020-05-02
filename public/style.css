@@ -92,7 +92,7 @@ body {
     display: none;
     position: fixed;
     background-color: #f4f4f4;
-    top: 0;
+    top: 50;
     left: 50px;
     border: none;
     z-index: 9000;
