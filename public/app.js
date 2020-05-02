@@ -399,7 +399,7 @@ function googleLogin() {
 
 function openNav() {
     console.log("lel");
-    document.getElementById("mySidenav").style.width = "100px";
+    document.getElementById("mySidenav").style.width = "50px";
 }
 
 function closeNav() {
