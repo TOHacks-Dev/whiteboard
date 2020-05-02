@@ -16,6 +16,18 @@ let canvasHeight = 1000;
 let usingBrush = false;
 let brushPoints = [];
 
+let app;
+let db;
+let board;
+let allPoints = [];
+
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
 class ShapeBoundingBox {
     constructor(left, top, width, height) {
         this.left = left;
@@ -253,9 +265,17 @@ function reactToMouseDown(e) {
         usingBrush = true;
         brushPoints.push({
             "shape": "brush",
+            "user": uuidv4(),
+            "strokeWeight": 2,
+            "colour": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 0
+            },
             "points": []
         });
-        addBrushPoint(loc.x, loc.y);
+        addBrushPoint(loc.x, loc.y, false);
     }
     
 };
@@ -303,9 +323,19 @@ function reactToMouseUp(e) {
     if (currentTool != "brush") {
         brushPoints.push({
             "shape": currentTool,
+            "user": uuidv4(),
+            "strokeWeight": 2,
+            "colour": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 0
+            },
             "points": points
         });
     }
+
+    push();
 }
 
 function saveImage() {
@@ -323,16 +353,36 @@ function openImage() {
     img.src = "whiteboard.png";
 }
 
+function pop() {
+    board.update({
+        strokes: firebase.firestore.FieldValue.arrayRemove(brushPoints[brushPoints.length - 1])
+    });
+}
+
+function push() {
+    board.update({
+        strokes: firebase.firestore.FieldValue.arrayUnion(brushPoints[brushPoints.length - 1])
+    });
+}
+
 function undo() {
     if (brushPoints.length > 0) {
+        pop();
         brushPoints.pop();
         draw();
     }
 }
 
 document.addEventListener("DOMContentLoaded", event => {
-    const app = firebase.app();
-    console.log(app);
+    app = firebase.app();
+    db = firebase.firestore();
+    board = db.collection("boards").doc("w9hQ0PWMGTXTSMh4iJMK");
+
+    board.onSnapshot(doc => {
+        const data = doc.data();
+        allPoints = data["strokes2"];
+        console.log(allPoints);
+    })
 });
 
 function googleLogin() {
