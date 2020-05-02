@@ -355,7 +355,7 @@ function reactToMouseUp(e) {
         "points": points
     });
 
-    //push();
+    push();
 }
 
 function saveImage() {
