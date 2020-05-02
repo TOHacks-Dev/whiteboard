@@ -335,7 +335,7 @@ function reactToMouseUp(e) {
         });
     }
 
-    push();
+    //push();
 }
 
 function saveImage() {
@@ -367,7 +367,7 @@ function push() {
 
 function undo() {
     if (brushPoints.length > 0) {
-        pop();
+        //pop();
         brushPoints.pop();
         draw();
     }
