@@ -22,6 +22,7 @@ let board;
 let allPoints = [];
 let ids = [];
 
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
@@ -467,3 +468,15 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
+
+function openColorForm() {
+    document.getElementById("colorForm").style.display = "block";
+  }
+  
+  function closeColorForm() {
+    document.getElementById("colorForm").style.display = "none";
+  }
+
+  function changeColor() {
+    strokeColor = document.forms["colorForm"]["favcolor"].value;
+  }

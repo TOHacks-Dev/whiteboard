@@ -88,3 +88,12 @@ body {
     padding: 0px;
     z-index: -3;
 }
+.colorFormPopup {
+    display: none;
+    position: fixed;
+    background-color: #f4f4f4;
+    top: 0;
+    left: 50px;
+    border: none;
+    z-index: 9000;
+  }
