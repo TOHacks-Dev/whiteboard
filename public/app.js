@@ -306,8 +306,6 @@ function reactToMouseUp(e) {
             "points": points
         });
     }
-
-    console.log(brushPoints);
 }
 
 function saveImage() {
