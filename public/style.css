@@ -55,17 +55,28 @@ body {
     color: #E2e2e2;
     background-color: #2e2e2eFF;
 }
+
 /* Resize image to container */
 .sidenav a img {
     max-width: 100%;
     height: auto;
 }
+
+.sidenav a canvas {
+    max-width: 100%;
+    height: auto;
+}
+
 .sidenav .closebtn {
     background-color: #E2e2e200;
     position: absolute;
     top: 0;
     font-size: 36px;
     margin: 0;
+}
+
+.selected {
+    background-color: #FFFFFF !important;
 }
 
 @media screen and (max-height: 450px) {
@@ -78,9 +89,6 @@ body {
     }
 }
 
-.selected {
-    background-color: #000;
-}
 
 html,
 body {
@@ -99,8 +107,9 @@ p{
     left: 50px;
     border: none;
     z-index: 9000;
-  }
-  .colorFormPopup .closeColorPicker {
+}
+
+.colorFormPopup .closeColorPicker {
     text-decoration: none;
     color: #000;
     background-color: #E2e2e200;
