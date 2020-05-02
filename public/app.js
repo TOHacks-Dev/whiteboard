@@ -228,47 +228,48 @@ function drawCur() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    console.log(allPoints);
-    for (let i = 0; i < allPoints.length; ++i) {
-        if (allPoints[i]["shape"] == "brush") {
-            for (let j = 1; j < allPoints[i]["points"].length; ++j) {
-                ctx.beginPath();
+    if (allPoints != undefined) {
+        for (let i = 0; i < allPoints.length; ++i) {
+            if (allPoints[i]["shape"] == "brush") {
+                for (let j = 1; j < allPoints[i]["points"].length; ++j) {
+                    ctx.beginPath();
 
-                if (allPoints[i]["points"][j]["mDown"]) {
-                    ctx.moveTo(allPoints[i]["points"][j - 1]["x"], allPoints[i]["points"][j - 1]["y"]);
-                } else {
-                    ctx.moveTo(allPoints[i]["points"][j]["x"] - 1, allPoints[i]["points"][j]["y"]);
+                    if (allPoints[i]["points"][j]["mDown"]) {
+                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"], allPoints[i]["points"][j - 1]["y"]);
+                    } else {
+                        ctx.moveTo(allPoints[i]["points"][j]["x"] - 1, allPoints[i]["points"][j]["y"]);
+                    }
+
+                    ctx.lineTo(allPoints[i]["points"][j]["x"], allPoints[i]["points"][j]["y"]);
+                    ctx.closePath();
+                    ctx.stroke();
                 }
-
-                ctx.lineTo(allPoints[i]["points"][j]["x"], allPoints[i]["points"][j]["y"]);
+            } else if (allPoints[i]["shape"] == "line") {
+                ctx.beginPath();
+                ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
+                ctx.lineTo(allPoints[i]["points"][2], allPoints[i]["points"][3]);
+                ctx.stroke();
+            } else if (allPoints[i]["shape"] == "rectangle") {
+                ctx.strokeRect(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3]);
+            } else if (allPoints[i]["shape"] == "circle") {
+                ctx.beginPath();
+                ctx.arc(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3],allPoints[i]["points"][4]);
+                ctx.stroke();
+            } else if (allPoints[i]["shape"] == "ellipse") {
+                ctx.beginPath();
+                ctx.ellipse(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
+                ctx.stroke();
+            } else if (allPoints[i]["shape"] == "polygon") {
+                ctx.beginPath();
+                ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
+                for (let j = 2; j < allPoints[i]["points"].length; j+=2) {
+                    ctx.lineTo(allPoints[i]["points"][j], allPoints[i]["points"][j+1]);
+                }
                 ctx.closePath();
                 ctx.stroke();
             }
-        } else if (allPoints[i]["shape"] == "line") {
-            ctx.beginPath();
-            ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
-            ctx.lineTo(allPoints[i]["points"][2], allPoints[i]["points"][3]);
-            ctx.stroke();
-        } else if (allPoints[i]["shape"] == "rectangle") {
-            ctx.strokeRect(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3]);
-        } else if (allPoints[i]["shape"] == "circle") {
-            ctx.beginPath();
-            ctx.arc(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3],allPoints[i]["points"][4]);
-            ctx.stroke();
-        } else if (allPoints[i]["shape"] == "ellipse") {
-            ctx.beginPath();
-            ctx.ellipse(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
-            ctx.stroke();
-        } else if (allPoints[i]["shape"] == "polygon") {
-            ctx.beginPath();
-            ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
-            for (let j = 2; j < allPoints[i]["points"].length; j+=2) {
-                ctx.lineTo(allPoints[i]["points"][j], allPoints[i]["points"][j+1]);
-            }
-            ctx.closePath();
-            ctx.stroke();
         }
-    }
+        }
 }
 
 function reactToMouseDown(e) {
@@ -373,7 +374,6 @@ function openImage() {
 }
 
 function pop() {
-    console.log(`trying to pop id: ${ids[ids.length - 1]}`);
     for (let i = allPoints.length - 1; i >= 0; --i) {
         if (allPoints[i]["id"] == ids[ids.length - 1]) {
             board.update({
@@ -385,7 +385,6 @@ function pop() {
 }
 
 function push() {
-    console.log(`trying to push id: ${ids[ids.length - 1]}`);
     for (let i = allPoints.length - 1; i >= 0; --i) {
         if (allPoints[i]["id"] == ids[ids.length - 1]) {
             board.update({
@@ -404,15 +403,9 @@ function undo() {
     }
 }
 
-function clear() {
-    board.set({
-        "strokes": []
-    })
-    .then(function() {
-        console.log("Clear successful");
-    })
-    .catch(function(e) {
-        console.error("error: ", e);
+function clearStrokes() {
+    board.update({
+        strokes: []
     });
 }
 
