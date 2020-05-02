@@ -38,6 +38,9 @@ let shapeBoundingBox = new ShapeBoundingBox(0, 0, 0, 0);
 let mousedown = new Location(0, 0);
 let loc = new Location(0, 0);
 
+let width = 1000;
+let height = 1000;
+
 document.addEventListener("DOMContentLoaded", setupCanvas);
 
 function setupCanvas() {
@@ -45,6 +48,8 @@ function setupCanvas() {
     ctx = canvas.getContext("2d");
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = lineWidth;
+    canvas.width = width;
+    canvas.height = height;
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
