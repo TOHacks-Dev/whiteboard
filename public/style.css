@@ -9,31 +9,31 @@
     font-family: "Arial";
 }
 
- 
-#my-canvas{
+
+#my-canvas {
     position: absolute;
     top: 0px;
-    left: 5%;
-    width: 95%;
+    left: 0%;
+    width: 100%;
 }
- 
-#img-data-div{
+
+#img-data-div {
     width: 100%;
     max-width: 900px;
     height: 200px;
 }
- 
+
 /* Resize image to container */
-.toolbar a img{
-    max-width:100%;
-    height:auto;
+.toolbar a img {
+    max-width: 100%;
+    height: auto;
 }
 
 body {
     font-family: "Lato", sans-serif;
-  }
-  
-  .sidenav {
+}
+
+.sidenav {
     height: 100%;
     width: 0;
     position: fixed;
@@ -44,34 +44,45 @@ body {
     overflow-x: hidden;
     transition: 0.3s;
     padding-top: 60px;
-  }
-  
-  .sidenav a {
+}
+
+.sidenav a {
     padding: 8px 8px;
     text-decoration: none;
     font-size: 25px;
     color: white;
     display: block;
     transition: 0.3s ease;
-  }
-  
-  .sidenav a:hover {
+}
+
+.sidenav a:hover {
     color: #2b2d2f;
-  }
-  
-  .sidenav .closebtn {
+}
+
+.sidenav .closebtn {
     position: absolute;
     top: 0;
     right: 10px;
     font-size: 36px;
     margin-left: 50px;
-  }
-  
-  @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-  }
-  
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
 .selected {
-    background-color: #000; 
+    background-color: #000;
+}
+
+html,
+body {
+    margin: 0px;
+    padding: 0px;
 }
