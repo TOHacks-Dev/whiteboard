@@ -14,12 +14,13 @@ let canvasWidth = 1000;
 let canvasHeight = 1000;
 
 let usingBrush = false;
-let brushPoints = [];
+let currentStroke = {};
 
 let app;
 let db;
 let board;
 let allPoints = [];
+let ids = [];
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -170,7 +171,7 @@ function drawRubberbandShape(loc) {
     ctx.strokeStyle = strokeColor;
     ctx.fillStyle = fillColor;
     if (currentTool == "brush") {
-        draw();
+        drawCur();
     } else if (currentTool == "line") {
         ctx.beginPath();
         ctx.moveTo(mousedown.x, mousedown.y);
@@ -201,56 +202,74 @@ function updateRubberbandOnMove(loc) {
 }
 
 function addBrushPoint(x, y, mouseDown) {
-    brushPoints[brushPoints.length - 1]["points"].push({
+    currentStroke["points"].push({
         "x": x,
         "y": y,
         "mDown": mouseDown
     });
 }
 
+function drawCur() {
+    for (let j = 1; j < currentStroke["points"].length; ++j) {
+        ctx.beginPath();
+
+        if (currentStroke["points"][j]["mDown"]) {
+            ctx.moveTo(currentStroke["points"][j - 1]["x"], currentStroke["points"][j - 1]["y"]);
+        } else {
+            ctx.moveTo(currentStroke["points"][j]["x"] - 1, currentStroke["points"][j]["y"]);
+        }
+
+        ctx.lineTo(currentStroke["points"][j]["x"], currentStroke["points"][j]["y"]);
+        ctx.closePath();
+        ctx.stroke();
+    }
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < brushPoints.length; ++i) {
-        if (brushPoints[i]["shape"] == "brush") {
-            for (let j = 1; j < brushPoints[i]["points"].length; ++j) {
-                ctx.beginPath();
+    if (allPoints != undefined) {
+        for (let i = 0; i < allPoints.length; ++i) {
+            if (allPoints[i]["shape"] == "brush") {
+                for (let j = 1; j < allPoints[i]["points"].length; ++j) {
+                    ctx.beginPath();
 
-                if (brushPoints[i]["points"][j]["mDown"]) {
-                    ctx.moveTo(brushPoints[i]["points"][j - 1]["x"], brushPoints[i]["points"][j - 1]["y"]);
-                } else {
-                    ctx.moveTo(brushPoints[i]["points"][j]["x"] - 1, brushPoints[i]["points"][j]["y"]);
+                    if (allPoints[i]["points"][j]["mDown"]) {
+                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"], allPoints[i]["points"][j - 1]["y"]);
+                    } else {
+                        ctx.moveTo(allPoints[i]["points"][j]["x"] - 1, allPoints[i]["points"][j]["y"]);
+                    }
+
+                    ctx.lineTo(allPoints[i]["points"][j]["x"], allPoints[i]["points"][j]["y"]);
+                    ctx.closePath();
+                    ctx.stroke();
                 }
-
-                ctx.lineTo(brushPoints[i]["points"][j]["x"], brushPoints[i]["points"][j]["y"]);
+            } else if (allPoints[i]["shape"] == "line") {
+                ctx.beginPath();
+                ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
+                ctx.lineTo(allPoints[i]["points"][2], allPoints[i]["points"][3]);
+                ctx.stroke();
+            } else if (allPoints[i]["shape"] == "rectangle") {
+                ctx.strokeRect(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3]);
+            } else if (allPoints[i]["shape"] == "circle") {
+                ctx.beginPath();
+                ctx.arc(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3],allPoints[i]["points"][4]);
+                ctx.stroke();
+            } else if (allPoints[i]["shape"] == "ellipse") {
+                ctx.beginPath();
+                ctx.ellipse(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
+                ctx.stroke();
+            } else if (allPoints[i]["shape"] == "polygon") {
+                ctx.beginPath();
+                ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
+                for (let j = 2; j < allPoints[i]["points"].length; j+=2) {
+                    ctx.lineTo(allPoints[i]["points"][j], allPoints[i]["points"][j+1]);
+                }
                 ctx.closePath();
                 ctx.stroke();
             }
-        } else if (brushPoints[i]["shape"] == "line") {
-            ctx.beginPath();
-            ctx.moveTo(brushPoints[i]["points"][0], brushPoints[i]["points"][1]);
-            ctx.lineTo(brushPoints[i]["points"][2], brushPoints[i]["points"][3]);
-            ctx.stroke();
-        } else if (brushPoints[i]["shape"] == "rectangle") {
-            ctx.strokeRect(brushPoints[i]["points"][0], brushPoints[i]["points"][1], brushPoints[i]["points"][2], brushPoints[i]["points"][3]);
-        } else if (brushPoints[i]["shape"] == "circle") {
-            ctx.beginPath();
-            ctx.arc(brushPoints[i]["points"][0], brushPoints[i]["points"][1], brushPoints[i]["points"][2], brushPoints[i]["points"][3],brushPoints[i]["points"][4]);
-            ctx.stroke();
-        } else if (brushPoints[i]["shape"] == "ellipse") {
-            ctx.beginPath();
-            ctx.ellipse(brushPoints[i]["points"][0], brushPoints[i]["points"][1], brushPoints[i]["points"][2], brushPoints[i]["points"][3], brushPoints[i]["points"][4], brushPoints[i]["points"][5], brushPoints[i]["points"][6]);
-            ctx.stroke();
-        } else if (brushPoints[i]["shape"] == "polygon") {
-            ctx.beginPath();
-            ctx.moveTo(brushPoints[i]["points"][0], brushPoints[i]["points"][1]);
-            for (let j = 2; j < brushPoints[i]["points"].length; j+=2) {
-                ctx.lineTo(brushPoints[i]["points"][j], brushPoints[i]["points"][j+1]);
-            }
-            ctx.closePath();
-            ctx.stroke();
         }
-    }
+        }
 }
 
 function reactToMouseDown(e) {
@@ -263,9 +282,8 @@ function reactToMouseDown(e) {
 
     if (currentTool === "brush") {
         usingBrush = true;
-        brushPoints.push({
+        currentStroke = {
             "shape": "brush",
-            "user": uuidv4(),
             "strokeWeight": 2,
             "colour": {
                 "r": 255,
@@ -274,7 +292,7 @@ function reactToMouseDown(e) {
                 "a": 0
             },
             "points": []
-        });
+        };
         addBrushPoint(loc.x, loc.y, false);
     }
     
@@ -289,7 +307,7 @@ function reactToMouseMove(e) {
             addBrushPoint(loc.x, loc.y, true);
         }
         redrawCanvasImage();
-        draw();
+        drawCur();
     } else {
         if (dragging) {
             redrawCanvasImage();
@@ -306,7 +324,9 @@ function reactToMouseUp(e) {
 
     let points = []
 
-    if (currentTool == "line") {
+    if (currentTool == "brush") {
+        points = currentStroke["points"];
+    } else if (currentTool == "line") {
         points = [mousedown.x, mousedown.y, loc.x, loc.y];
     } else if (currentTool == "rectangle") {
         points = [shapeBoundingBox.left, shapeBoundingBox.top, shapeBoundingBox.width, shapeBoundingBox.height];
@@ -320,20 +340,20 @@ function reactToMouseUp(e) {
     dragging = false;
     usingBrush = false;
 
-    if (currentTool != "brush") {
-        brushPoints.push({
-            "shape": currentTool,
-            "user": uuidv4(),
-            "strokeWeight": 2,
-            "colour": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 0
-            },
-            "points": points
-        });
-    }
+    ids.push(uuidv4());
+
+    allPoints.push({
+        "shape": currentTool,
+        "id": ids[ids.length - 1],
+        "strokeWeight": 2,
+        "colour": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 0
+        },
+        "points": points
+    });
 
     //push();
 }
@@ -354,23 +374,39 @@ function openImage() {
 }
 
 function pop() {
-    board.update({
-        strokes: firebase.firestore.FieldValue.arrayRemove(brushPoints[brushPoints.length - 1])
-    });
+    for (let i = allPoints.length - 1; i >= 0; --i) {
+        if (allPoints[i]["id"] == ids[ids.length - 1]) {
+            board.update({
+                strokes: firebase.firestore.FieldValue.arrayRemove(allPoints[i])
+            });
+            break;
+        }
+    }
 }
 
 function push() {
-    board.update({
-        strokes: firebase.firestore.FieldValue.arrayUnion(brushPoints[brushPoints.length - 1])
-    });
+    for (let i = allPoints.length - 1; i >= 0; --i) {
+        if (allPoints[i]["id"] == ids[ids.length - 1]) {
+            board.update({
+                strokes: firebase.firestore.FieldValue.arrayUnion(allPoints[i])
+            });
+            break;
+        }
+    }
 }
 
 function undo() {
-    if (brushPoints.length > 0) {
-        //pop();
-        brushPoints.pop();
+    if (ids.length > 0) {
+        pop();
+        ids.pop();
         draw();
     }
+}
+
+function clearStrokes() {
+    board.update({
+        strokes: []
+    });
 }
 
 document.addEventListener("DOMContentLoaded", event => {
@@ -380,8 +416,8 @@ document.addEventListener("DOMContentLoaded", event => {
 
     board.onSnapshot(doc => {
         const data = doc.data();
-        allPoints = data["strokes2"];
-        console.log(allPoints);
+        allPoints = data["strokes"];
+        draw();
     })
 });
 
