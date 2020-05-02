@@ -211,6 +211,8 @@ function addBrushPoint(x, y, mouseDown) {
 }
 
 function drawCur() {
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 5;
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
 
@@ -231,6 +233,8 @@ function draw() {
 
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 5;
             if (allPoints[i]["shape"] == "brush") {
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
