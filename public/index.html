@@ -17,10 +17,7 @@
     <script defer src="/__/firebase/init.js"></script>
   </head>
   <body>
-    
-    <div class="wrapper">
-      <span style="font-size:30px;cursor:pointer;z-index: 70;" onclick="openNav()">&#9776;</span>
-      <div id="mySidenav" class="sidenav">
+    <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a class="selected" href="#" id="open" onclick="openImage()"><img src="open-icon.png"></a><br>
         <a href="#" id="save" onclick="undo()"><img src="save-icon.png"></a><br>
@@ -31,6 +28,8 @@
         <a href="#" id="ellipse" onclick="changeTool('ellipse')"><img src="ellipse-icon.png"></a><br>
         <a href="#" id="polygon" onclick="changeTool('polygon')"><img src="polygon-icon.png"></a>
       </div>
+    <div class="wrapper">
+      <span style="font-size:30px;cursor:pointer;position:absolute;left:10px;top:10px;user-select:none;" onclick="openNav()">&#9776;</span>
       <!--<button onclick="googleLogin()">Login with Google</button>-->
       <br>
       <canvas id="my-canvas">
@@ -40,7 +39,6 @@
           <a href="#" id="img-file" download="image.png">download image</a>
       </div>-->
     </div>
-    <span style="font-size:30px;cursor:pointer;z-index: 70;" onclick="openNav()">&#9776;</span>
     <script src="app.js"></script>
   </body>
 </html>

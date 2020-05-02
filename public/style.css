@@ -10,7 +10,6 @@
     z-index: -2;
 }
 
-
 #my-canvas {
     position: absolute;
     z-index: -1;
@@ -24,8 +23,6 @@
     max-width: 900px;
     height: 200px;
 }
-
-
 
 body {
     font-family: "Lato", sans-serif;
@@ -87,4 +84,5 @@ html,
 body {
     margin: 0px;
     padding: 0px;
+    z-index: -3;
 }
