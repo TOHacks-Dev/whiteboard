@@ -59,7 +59,6 @@ function setupCanvas() {
     let canvasSizeData = canvas.getBoundingClientRect();
     canvas.width = canvasWidth = window.innerWidth;
     canvas.height = canvasHeight = window.innerHeight;
-    console.log(canvasHeight);
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
@@ -410,9 +409,43 @@ function clearStrokes() {
 }
 
 document.addEventListener("DOMContentLoaded", event => {
+    let path = window.location.pathname;
+    path = path.substring(1);
+
     app = firebase.app();
     db = firebase.firestore();
-    board = db.collection("boards").doc("w9hQ0PWMGTXTSMh4iJMK");
+
+    if (path == "") {
+        db.collection("boards").add({
+            strokes: []
+        })
+        .then(function(docRef) {
+            window.location.href = window.location.origin + "/" + docRef.id;
+        })
+        .catch(function(e) {
+            console.error("Error adding document: ", e);
+        });
+    } else {
+        board = db.collection("boards").doc(path);
+
+        board.get()
+        .then(function(doc) {
+            if (!doc.exists) {
+                db.collection("boards").add({
+                    strokes: []
+                })
+                .then(function(docRef) {
+                    window.location.href = window.location.origin + "/" + docRef.id;
+                })
+                .catch(function(e) {
+                    console.error("Error adding document: ", e);
+                });
+            }
+        })
+        .catch(function(e) {
+            console.error("Error getting document: ", e);
+        })
+    }
 
     board.onSnapshot(doc => {
         const data = doc.data();
@@ -421,20 +454,7 @@ document.addEventListener("DOMContentLoaded", event => {
     })
 });
 
-function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    firebase.auth().signInWithPopup(provider)
-        .then(result => {
-            const user = result.user;
-            document.write(`Hello ${user.displayName}`);
-            console.log(user);
-        })
-        .catch(console.log);
-}
-
 function openNav() {
-    console.log("lel");
     document.getElementById("mySidenav").style.width = "50px";
 }
 
