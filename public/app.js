@@ -22,6 +22,8 @@ let board;
 let allPoints = [];
 let ids = [];
 
+let output = document.getElementById("weightVal");
+output.innerHTML = 1;
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -77,6 +79,9 @@ function changeTool(toolClicked) {
     document.getElementById("polygon").className = "";
     document.getElementById(toolClicked).className = "selected";
     currentTool = toolClicked;
+    if(currentTool=="brush"){
+        openStrokeForm();
+    }
 }
 
 function getMousePosition(x, y) {
@@ -214,9 +219,9 @@ function addBrushPoint(x, y, mouseDown) {
 function drawCur() {
     ctx.strokeStyle = currentStroke["colour"];
     ctx.lineWidth = currentStroke["strokeWeight"];
+    ctx.lineJoin = "round";
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
-
         if (currentStroke["points"][j]["mDown"]) {
             ctx.moveTo(currentStroke["points"][j - 1]["x"], currentStroke["points"][j - 1]["y"]);
         } else {
@@ -227,6 +232,7 @@ function drawCur() {
         ctx.closePath();
         ctx.stroke();
     }
+    ctx.lineJoin = "miter";
 }
 
 function draw() {
@@ -237,9 +243,9 @@ function draw() {
             ctx.strokeStyle = allPoints[i]["colour"];
             ctx.lineWidth = allPoints[i]["strokeWeight"];
             if (allPoints[i]["shape"] == "brush") {
+                ctx.lineJoin = "round";
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
-
                     if (allPoints[i]["points"][j]["mDown"]) {
                         ctx.moveTo(allPoints[i]["points"][j - 1]["x"], allPoints[i]["points"][j - 1]["y"]);
                     } else {
@@ -250,6 +256,7 @@ function draw() {
                     ctx.closePath();
                     ctx.stroke();
                 }
+                ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
                 ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
@@ -467,6 +474,19 @@ function openColorForm() {
     document.getElementById("colorForm").style.display = "none";
   }
 
-  function changeColor(col) {
+  function changeColor() {
     strokeColor = document.getElementById("colorChoice").value;
+  }
+
+  function openStrokeForm() {
+    document.getElementById("strokeForm").style.display = "block";
+  }
+  
+  function closeStrokeForm() {
+    document.getElementById("strokeForm").style.display = "none";
+  }
+
+  function changeStroke() {
+    lineWidth = Math.floor(document.getElementById("strokeChoice").value/2)+2;
+    output.innerHTML = Math.floor((lineWidth-2)*2/10)+1;
   }

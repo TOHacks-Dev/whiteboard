@@ -31,11 +31,18 @@
         <a href="#" id="ellipse" onclick="changeTool('ellipse')"><img src="images/ellipse.png"></a><br>
         <a href="#" id="polygon" onclick="changeTool('polygon')"><img src="images/usuckalex.png"></a>
     </div>
+
     <div class="colorFormPopup" id = "colorForm">
       <input name="Color Picker" type="color" id="colorChoice" onchange="changeColor()"/>
       <a href="#" class="closeColorPicker" onclick="closeColorForm()">&times;</a>
-
     </div>
+
+    <div class="strokeWeightPopup" id = "strokeForm">
+      <input type="range" value="0" id="strokeChoice" step = "10"onchange="changeStroke()"/>
+      <a href="#" class="closeStrokePicker" onclick="closeStrokeForm()">&times;</a>
+      <p>Stroke Weight: <span id="weightVal"></span></p>
+    </div>
+
     <div class="wrapper">
       <span style="font-size:30px;cursor:pointer;position:absolute;left:10px;top:10px;user-select:none;" onclick="openNav()">&#9776;</span>
       <!--<button onclick="googleLogin()">Login with Google</button>-->
