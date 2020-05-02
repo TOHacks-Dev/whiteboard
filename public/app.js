@@ -212,8 +212,8 @@ function addBrushPoint(x, y, mouseDown) {
 }
 
 function drawCur() {
-    ctx.strokeStyle = strokeColor;
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = currentStroke["colour"];
+    ctx.lineWidth = currentStroke["strokeWeight"];
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
 
@@ -234,8 +234,8 @@ function draw() {
 
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
-            ctx.strokeStyle = strokeColor;
-            ctx.lineWidth = 5;
+            ctx.strokeStyle = allPoints[i]["colour"];
+            ctx.lineWidth = allPoints[i]["strokeWeight"];
             if (allPoints[i]["shape"] == "brush") {
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
@@ -290,13 +290,8 @@ function reactToMouseDown(e) {
         usingBrush = true;
         currentStroke = {
             "shape": "brush",
-            "strokeWeight": 2,
-            "colour": {
-                "r": 255,
-                "g": 255,
-                "b": 255,
-                "a": 0
-            },
+            "strokeWeight": lineWidth,
+            "colour": strokeColor,
             "points": []
         };
         addBrushPoint(loc.x, loc.y, false);
@@ -351,13 +346,8 @@ function reactToMouseUp(e) {
     allPoints.push({
         "shape": currentTool,
         "id": ids[ids.length - 1],
-        "strokeWeight": 2,
-        "colour": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 0
-        },
+        "strokeWeight": lineWidth,
+        "colour": strokeColor,
         "points": points
     });
 
