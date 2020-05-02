@@ -1,6 +1,9 @@
 let canvas;
 let ctx;
 
+let paletteCanvas;
+let paletteCtx;
+
 let savedImageData;
 
 let dragging = false;
@@ -51,11 +54,19 @@ let shapeBoundingBox = new ShapeBoundingBox(0, 0, 0, 0);
 let mousedown = new Location(0, 0);
 let loc = new Location(0, 0);
 
+var paletteImg = new Image;
+
 document.addEventListener("DOMContentLoaded", setupCanvas);
 
 function setupCanvas() {
     canvas = document.getElementById("my-canvas");
     ctx = canvas.getContext("2d");
+    paletteCanvas = document.getElementById("palette-canvas");
+    paletteCanvas.height = paletteCanvas.width;
+    paletteCtx = paletteCanvas.getContext("2d");
+    paletteImg.onload = drawPalette;
+    paletteImg.src = "images/palette.png";
+
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = lineWidth;
     let canvasSizeData = canvas.getBoundingClientRect();
@@ -64,6 +75,15 @@ function setupCanvas() {
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
+}
+
+function drawPalette() {
+    //paletteCtx.clearRect(0, 0, paletteCanvas.width, paletteCanvas.height);
+    paletteCtx.globalCompositeOperation = "source-over";
+    paletteCtx.fillStyle = strokeColor;
+    paletteCtx.fillRect(0, 0, paletteCanvas.width, paletteCanvas.height);
+    paletteCtx.globalCompositeOperation = "destination-in";
+    paletteCtx.drawImage(paletteImg, 0, 0, paletteCanvas.width, paletteCanvas.height);
 }
 
 function changeTool(toolClicked) {
@@ -414,34 +434,34 @@ document.addEventListener("DOMContentLoaded", event => {
 
     if (path == "") {
         db.collection("boards").add({
-            strokes: []
-        })
-        .then(function(docRef) {
-            window.location.href = window.location.origin + "/" + docRef.id;
-        })
-        .catch(function(e) {
-            console.error("Error adding document: ", e);
-        });
+                strokes: []
+            })
+            .then(function (docRef) {
+                window.location.href = window.location.origin + "/" + docRef.id;
+            })
+            .catch(function (e) {
+                console.error("Error adding document: ", e);
+            });
     } else {
         board = db.collection("boards").doc(path);
 
         board.get()
-        .then(function(doc) {
-            if (!doc.exists) {
-                db.collection("boards").add({
-                    strokes: []
-                })
-                .then(function(docRef) {
-                    window.location.href = window.location.origin + "/" + docRef.id;
-                })
-                .catch(function(e) {
-                    console.error("Error adding document: ", e);
-                });
-            }
-        })
-        .catch(function(e) {
-            console.error("Error getting document: ", e);
-        })
+            .then(function (doc) {
+                if (!doc.exists) {
+                    db.collection("boards").add({
+                            strokes: []
+                        })
+                        .then(function (docRef) {
+                            window.location.href = window.location.origin + "/" + docRef.id;
+                        })
+                        .catch(function (e) {
+                            console.error("Error adding document: ", e);
+                        });
+                }
+            })
+            .catch(function (e) {
+                console.error("Error getting document: ", e);
+            })
     }
 
     board.onSnapshot(doc => {
@@ -461,12 +481,13 @@ function closeNav() {
 
 function openColorForm() {
     document.getElementById("colorForm").style.display = "block";
-  }
-  
-  function closeColorForm() {
-    document.getElementById("colorForm").style.display = "none";
-  }
+}
 
-  function changeColor(col) {
+function closeColorForm() {
+    document.getElementById("colorForm").style.display = "none";
+}
+
+function changeColor(col) {
     strokeColor = document.getElementById("colorChoice").value;
-  }
+    drawPalette();
+}
