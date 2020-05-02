@@ -404,6 +404,18 @@ function undo() {
     }
 }
 
+function clear() {
+    board.set({
+        "strokes": []
+    })
+    .then(function() {
+        console.log("Clear successful");
+    })
+    .catch(function(e) {
+        console.error("error: ", e);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", event => {
     app = firebase.app();
     db = firebase.firestore();
