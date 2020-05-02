@@ -132,21 +132,32 @@ function getPolygonPoints() {
     return polygonPoints;
 }
 
-function getPolygon() {
+function getPolygon(shouldDraw) {
+
+    let points = [];
     let polygonPoints = getPolygonPoints();
-    ctx.beginPath();
-    ctx.moveTo(polygonPoints[0].x, polygonPoints[0].y);
-    for (let i = 1; i < polygonSides; i++) {
-        ctx.lineTo(polygonPoints[i].x, polygonPoints[i].y);
+
+    if (shouldDraw) {
+        ctx.beginPath();
+        ctx.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+        for (let i = 1; i < polygonSides; i++) {
+            ctx.lineTo(polygonPoints[i].x, polygonPoints[i].y);
+        }
+        ctx.closePath();
+    } else {
+        points = [polygonPoints[0].x, polygonPoints[0].y];for (let i = 1; i < polygonSides; i++) {
+            points.push(polygonPoints[i].x, polygonPoints[i].y)
+        }
     }
-    ctx.closePath();
+
+    return points;
 }
 
 function drawRubberbandShape(loc) {
     ctx.strokeStyle = strokeColor;
     ctx.fillStyle = fillColor;
     if (currentTool == "brush") {
-        drawBrush();
+        draw();
     } else if (currentTool == "line") {
         ctx.beginPath();
         ctx.moveTo(mousedown.x, mousedown.y);
@@ -166,7 +177,7 @@ function drawRubberbandShape(loc) {
         ctx.ellipse(mousedown.x, mousedown.y, radiusX, radiusY, Math.PI / 4, 0, Math.PI * 2);
         ctx.stroke();
     } else if (currentTool == "polygon") {
-        getPolygon();
+        getPolygon(true);
         ctx.stroke();
     }
 }
@@ -177,27 +188,52 @@ function updateRubberbandOnMove(loc) {
 }
 
 function addBrushPoint(x, y, mouseDown) {
-    brushPoints[brushPoints.length - 1].push({
+    brushPoints[brushPoints.length - 1]["points"].push({
         "x": x,
         "y": y,
         "mDown": mouseDown
     });
 }
 
-function drawBrush() {
+function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < brushPoints.length; ++i) {
-        for (let j = 1; j < brushPoints[i].length; ++j) {
-            ctx.beginPath();
+        if (brushPoints[i]["shape"] == "brush") {
+            for (let j = 1; j < brushPoints[i]["points"].length; ++j) {
+                ctx.beginPath();
 
-            if (brushPoints[i][j]["mDown"]) {
-                ctx.moveTo(brushPoints[i][j - 1]["x"], brushPoints[i][j - 1]["y"]);
-            } else {
-                ctx.moveTo(brushPoints[i][j]["x"] - 1, brushPoints[i][j]["y"]);
+                if (brushPoints[i]["points"][j]["mDown"]) {
+                    ctx.moveTo(brushPoints[i]["points"][j - 1]["x"], brushPoints[i]["points"][j - 1]["y"]);
+                } else {
+                    ctx.moveTo(brushPoints[i]["points"][j]["x"] - 1, brushPoints[i]["points"][j]["y"]);
+                }
+
+                ctx.lineTo(brushPoints[i]["points"][j]["x"], brushPoints[i]["points"][j]["y"]);
+                ctx.closePath();
+                ctx.stroke();
             }
-
-            ctx.lineTo(brushPoints[i][j]["x"], brushPoints[i][j]["y"]);
+        } else if (brushPoints[i]["shape"] == "line") {
+            ctx.beginPath();
+            ctx.moveTo(brushPoints[i]["points"][0], brushPoints[i]["points"][1]);
+            ctx.lineTo(brushPoints[i]["points"][2], brushPoints[i]["points"][3]);
+            ctx.stroke();
+        } else if (brushPoints[i]["shape"] == "rectangle") {
+            ctx.strokeRect(brushPoints[i]["points"][0], brushPoints[i]["points"][1], brushPoints[i]["points"][2], brushPoints[i]["points"][3]);
+        } else if (brushPoints[i]["shape"] == "circle") {
+            ctx.beginPath();
+            ctx.arc(brushPoints[i]["points"][0], brushPoints[i]["points"][1], brushPoints[i]["points"][2], brushPoints[i]["points"][3],brushPoints[i]["points"][4]);
+            ctx.stroke();
+        } else if (brushPoints[i]["shape"] == "ellipse") {
+            ctx.beginPath();
+            ctx.ellipse(brushPoints[i]["points"][0], brushPoints[i]["points"][1], brushPoints[i]["points"][2], brushPoints[i]["points"][3], brushPoints[i]["points"][4], brushPoints[i]["points"][5], brushPoints[i]["points"][6]);
+            ctx.stroke();
+        } else if (brushPoints[i]["shape"] == "polygon") {
+            ctx.beginPath();
+            ctx.moveTo(brushPoints[i]["points"][0], brushPoints[i]["points"][1]);
+            for (let j = 2; j < brushPoints[i]["points"].length; j+=2) {
+                ctx.lineTo(brushPoints[i]["points"][j], brushPoints[i]["points"][j+1]);
+            }
             ctx.closePath();
             ctx.stroke();
         }
@@ -214,9 +250,13 @@ function reactToMouseDown(e) {
 
     if (currentTool === "brush") {
         usingBrush = true;
-        brushPoints.push([]);
+        brushPoints.push({
+            "shape": "brush",
+            "points": []
+        });
         addBrushPoint(loc.x, loc.y);
     }
+    
 };
 
 function reactToMouseMove(e) {
@@ -228,7 +268,7 @@ function reactToMouseMove(e) {
             addBrushPoint(loc.x, loc.y, true);
         }
         redrawCanvasImage();
-        drawBrush();
+        draw();
     } else {
         if (dragging) {
             redrawCanvasImage();
@@ -242,8 +282,31 @@ function reactToMouseUp(e) {
     loc = getMousePosition(e.clientX, e.clientY);
     redrawCanvasImage();
     updateRubberbandOnMove(loc);
+
+    let points = []
+
+    if (currentTool == "line") {
+        points = [mousedown.x, mousedown.y, loc.x, loc.y];
+    } else if (currentTool == "rectangle") {
+        points = [shapeBoundingBox.left, shapeBoundingBox.top, shapeBoundingBox.width, shapeBoundingBox.height];
+    } else if (currentTool == "circle") {
+        points = [mousedown.x, mousedown.y, shapeBoundingBox.width, 0, Math.PI * 2];
+    } else if (currentTool == "ellipse") {
+        points = [mousedown.x, mousedown.y, shapeBoundingBox.width / 2, shapeBoundingBox.height / 2, Math.PI / 4, 0, Math.PI * 2];
+    } else if (currentTool == "polygon") {
+        points = getPolygon(false);
+    }
     dragging = false;
     usingBrush = false;
+
+    if (currentTool != "brush") {
+        brushPoints.push({
+            "shape": currentTool,
+            "points": points
+        });
+    }
+
+    console.log(brushPoints);
 }
 
 function saveImage() {
@@ -264,7 +327,7 @@ function openImage() {
 function undo() {
     if (brushPoints.length > 0) {
         brushPoints.pop();
-        drawBrush();
+        draw();
     }
 }
 
