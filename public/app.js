@@ -14,10 +14,7 @@ let canvasWidth = 1000;
 let canvasHeight = 1000;
 
 let usingBrush = false;
-let brushXPoints = [];
-let brushYPoints = [];
 let brushPoints = [];
-let brushDownPos = [];
 
 class ShapeBoundingBox {
     constructor(left, top, width, height) {
@@ -180,30 +177,14 @@ function updateRubberbandOnMove(loc) {
 }
 
 function addBrushPoint(x, y, mouseDown) {
-    brushXPoints.push(x);
-    brushYPoints.push(y);
     brushPoints[brushPoints.length - 1].push({
         "x": x,
         "y": y,
         "mDown": mouseDown
     });
-    brushDownPos.push(mouseDown);
 }
 
 function drawBrush() {
-    // for (let i = 1; i < brushXPoints.length; i++) {
-    //     ctx.beginPath();
-
-    //     if (brushDownPos[i]) {
-    //         ctx.moveTo(brushXPoints[i - 1], brushYPoints[i - 1]);
-    //     } else {
-    //         ctx.moveTo(brushXPoints[i] - 1, brushYPoints[i]);
-    //     }
-    //     ctx.lineTo(brushXPoints[i], brushYPoints[i]);
-    //     ctx.closePath();
-    //     ctx.stroke();
-    // }
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < brushPoints.length; ++i) {
@@ -281,15 +262,10 @@ function openImage() {
 }
 
 function undo() {
-    console.log("POPPING");
-    console.log(brushPoints);
     if (brushPoints.length > 0) {
-        console.log("IN");
         brushPoints.pop();
         drawBrush();
     }
-    console.log(brushPoints);
-    console.log("DONE");
 }
 
 document.addEventListener("DOMContentLoaded", event => {
