@@ -355,7 +355,7 @@ function reactToMouseUp(e) {
         "points": points
     });
 
-    push();
+    //push();
 }
 
 function saveImage() {
@@ -396,9 +396,15 @@ function push() {
 }
 
 function undo() {
+<<<<<<< HEAD
     if (ids.length > 0) {
         pop();
         ids.pop();
+=======
+    if (brushPoints.length > 0) {
+        //pop();
+        brushPoints.pop();
+>>>>>>> alex1
         draw();
     }
 }
@@ -435,7 +441,7 @@ function googleLogin() {
 
 function openNav() {
     console.log("lel");
-    document.getElementById("mySidenav").style.width = "100px";
+    document.getElementById("mySidenav").style.width = "50px";
 }
 
 function closeNav() {
