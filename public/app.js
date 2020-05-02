@@ -24,11 +24,12 @@ let ids = [];
 
 
 function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
     });
-  }
+}
 
 class ShapeBoundingBox {
     constructor(left, top, width, height) {
@@ -60,7 +61,6 @@ function setupCanvas() {
     let canvasSizeData = canvas.getBoundingClientRect();
     canvas.width = canvasWidth = window.innerWidth;
     canvas.height = canvasHeight = window.innerHeight;
-    console.log(canvasHeight);
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
@@ -160,7 +160,8 @@ function getPolygon(shouldDraw) {
         }
         ctx.closePath();
     } else {
-        points = [polygonPoints[0].x, polygonPoints[0].y];for (let i = 1; i < polygonSides; i++) {
+        points = [polygonPoints[0].x, polygonPoints[0].y];
+        for (let i = 1; i < polygonSides; i++) {
             points.push(polygonPoints[i].x, polygonPoints[i].y)
         }
     }
@@ -211,6 +212,8 @@ function addBrushPoint(x, y, mouseDown) {
 }
 
 function drawCur() {
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 5;
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
 
@@ -231,6 +234,8 @@ function draw() {
 
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 5;
             if (allPoints[i]["shape"] == "brush") {
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
@@ -254,7 +259,7 @@ function draw() {
                 ctx.strokeRect(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3]);
             } else if (allPoints[i]["shape"] == "circle") {
                 ctx.beginPath();
-                ctx.arc(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3],allPoints[i]["points"][4]);
+                ctx.arc(allPoints[i]["points"][0], allPoints[i]["points"][1], allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "ellipse") {
                 ctx.beginPath();
@@ -263,14 +268,14 @@ function draw() {
             } else if (allPoints[i]["shape"] == "polygon") {
                 ctx.beginPath();
                 ctx.moveTo(allPoints[i]["points"][0], allPoints[i]["points"][1]);
-                for (let j = 2; j < allPoints[i]["points"].length; j+=2) {
-                    ctx.lineTo(allPoints[i]["points"][j], allPoints[i]["points"][j+1]);
+                for (let j = 2; j < allPoints[i]["points"].length; j += 2) {
+                    ctx.lineTo(allPoints[i]["points"][j], allPoints[i]["points"][j + 1]);
                 }
                 ctx.closePath();
                 ctx.stroke();
             }
         }
-        }
+    }
 }
 
 function reactToMouseDown(e) {
@@ -296,7 +301,7 @@ function reactToMouseDown(e) {
         };
         addBrushPoint(loc.x, loc.y, false);
     }
-    
+
 };
 
 function reactToMouseMove(e) {
@@ -411,9 +416,43 @@ function clearStrokes() {
 }
 
 document.addEventListener("DOMContentLoaded", event => {
+    let path = window.location.pathname;
+    path = path.substring(1);
+
     app = firebase.app();
     db = firebase.firestore();
-    board = db.collection("boards").doc("w9hQ0PWMGTXTSMh4iJMK");
+
+    if (path == "") {
+        db.collection("boards").add({
+            strokes: []
+        })
+        .then(function(docRef) {
+            window.location.href = window.location.origin + "/" + docRef.id;
+        })
+        .catch(function(e) {
+            console.error("Error adding document: ", e);
+        });
+    } else {
+        board = db.collection("boards").doc(path);
+
+        board.get()
+        .then(function(doc) {
+            if (!doc.exists) {
+                db.collection("boards").add({
+                    strokes: []
+                })
+                .then(function(docRef) {
+                    window.location.href = window.location.origin + "/" + docRef.id;
+                })
+                .catch(function(e) {
+                    console.error("Error adding document: ", e);
+                });
+            }
+        })
+        .catch(function(e) {
+            console.error("Error getting document: ", e);
+        })
+    }
 
     board.onSnapshot(doc => {
         const data = doc.data();
@@ -421,18 +460,6 @@ document.addEventListener("DOMContentLoaded", event => {
         draw();
     })
 });
-
-function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    firebase.auth().signInWithPopup(provider)
-        .then(result => {
-            const user = result.user;
-            document.write(`Hello ${user.displayName}`);
-            console.log(user);
-        })
-        .catch(console.log);
-}
 
 function openNav() {
     document.getElementById("mySidenav").style.width = "50px";
