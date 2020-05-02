@@ -212,8 +212,8 @@ function addBrushPoint(x, y, mouseDown) {
 }
 
 function drawCur() {
-    ctx.strokeStyle = allPoints[i]["colour"];
-    ctx.lineWidth = allPoints[i]["strokeWeight"];
+    ctx.strokeStyle = currentStroke["colour"];
+    ctx.lineWidth = currentStroke["strokeWeight"];
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
 
