@@ -467,6 +467,6 @@ function openColorForm() {
     document.getElementById("colorForm").style.display = "none";
   }
 
-  function changeColor() {
-    strokeColor = document.forms["colorForm"]["favcolor"].value;
+  function changeColor(col) {
+    strokeColor = document.getElementById("colorChoice").value;
   }
