@@ -22,6 +22,7 @@ let board;
 let allPoints = [];
 let ids = [];
 
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
@@ -211,6 +212,8 @@ function addBrushPoint(x, y, mouseDown) {
 }
 
 function drawCur() {
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 5;
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
 
@@ -231,6 +234,8 @@ function draw() {
 
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 5;
             if (allPoints[i]["shape"] == "brush") {
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
@@ -400,10 +405,6 @@ function undo() {
     if (ids.length > 0) {
         pop();
         ids.pop();
-    }
-    if (brushPoints.length > 0) {
-        //pop();
-        brushPoints.pop();
         draw();
     }
 }
@@ -467,3 +468,15 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
+
+function openColorForm() {
+    document.getElementById("colorForm").style.display = "block";
+  }
+  
+  function closeColorForm() {
+    document.getElementById("colorForm").style.display = "none";
+  }
+
+  function changeColor() {
+    strokeColor = document.forms["colorForm"]["favcolor"].value;
+  }
