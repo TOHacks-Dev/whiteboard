@@ -271,3 +271,11 @@ function googleLogin() {
         })
         .catch(console.log);
 }
+function openNav() {
+    console.log("lel");
+    document.getElementById("mySidenav").style.width = "100px";
+}
+  
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+}
