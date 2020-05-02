@@ -10,8 +10,8 @@ let lineWidth = 2;
 let polygonSides = 6;
 
 let currentTool = "brush";
-let canvasWidth = 600;
-let canvasHeight = 600;
+let canvasWidth = 1000;
+let canvasHeight = 1000;
 
 let usingBrush = false;
 let brushXPoints = [];
@@ -38,9 +38,6 @@ let shapeBoundingBox = new ShapeBoundingBox(0, 0, 0, 0);
 let mousedown = new Location(0, 0);
 let loc = new Location(0, 0);
 
-let width = 1000;
-let height = 1000;
-
 document.addEventListener("DOMContentLoaded", setupCanvas);
 
 function setupCanvas() {
@@ -48,8 +45,9 @@ function setupCanvas() {
     ctx = canvas.getContext("2d");
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = lineWidth;
-    canvas.width = width;
-    canvas.height = height;
+    let canvasSizeData = canvas.getBoundingClientRect();
+    canvas.width = canvasWidth = canvasSizeData.width;
+    canvas.height = canvasHeight = canvasWidth / canvasSizeData.width * canvasSizeData.height;
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
