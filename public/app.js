@@ -48,7 +48,8 @@ function setupCanvas() {
     ctx.lineWidth = lineWidth;
     let canvasSizeData = canvas.getBoundingClientRect();
     canvas.width = canvasWidth = canvasSizeData.width;
-    canvas.height = canvasHeight = canvasWidth / canvasSizeData.width * canvasSizeData.height;
+    canvas.height = canvasHeight = canvasSizeData.height;
+    console.log(canvasHeight);
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
