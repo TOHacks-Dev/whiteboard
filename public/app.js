@@ -47,8 +47,8 @@ function setupCanvas() {
     ctx.strokeStyle = strokeColor;
     ctx.lineWidth = lineWidth;
     let canvasSizeData = canvas.getBoundingClientRect();
-    canvas.width = canvasWidth = canvasSizeData.width;
-    canvas.height = canvasHeight = canvasSizeData.height;
+    canvas.width = canvasWidth = window.innerWidth;
+    canvas.height = canvasHeight = window.innerHeight;
     console.log(canvasHeight);
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
@@ -309,11 +309,12 @@ function googleLogin() {
         })
         .catch(console.log);
 }
+
 function openNav() {
     console.log("lel");
     document.getElementById("mySidenav").style.width = "100px";
 }
-  
+
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }

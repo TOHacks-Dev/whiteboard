@@ -7,13 +7,15 @@
     height: 100%;
     margin: auto;
     font-family: "Arial";
+    z-index: -2;
 }
 
 
 #my-canvas {
     position: absolute;
-    top: 0px;
-    left: 0%;
+    z-index: -1;
+    top: 0;
+    left: 0;
     width: 100%;
 }
 
