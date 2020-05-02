@@ -25,11 +25,7 @@
     height: 200px;
 }
 
-/* Resize image to container */
-.toolbar a img {
-    max-width: 100%;
-    height: auto;
-}
+
 
 body {
     font-family: "Lato", sans-serif;
@@ -60,7 +56,11 @@ body {
 .sidenav a:hover {
     color: #2b2d2f;
 }
-
+/* Resize image to container */
+.sidenav a img {
+    max-width: 100%;
+    height: auto;
+}
 .sidenav .closebtn {
     position: absolute;
     top: 0;
