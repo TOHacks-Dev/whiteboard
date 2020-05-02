@@ -91,8 +91,14 @@ body {
 .colorFormPopup {
     display: none;
     position: fixed;
-    top: 50;
+    top: 275px;
     left: 50px;
     border: none;
     z-index: 9000;
   }
+  .colorFormPopup .closeColorPicker {
+    text-decoration: none;
+    color: #000;
+    background-color: #E2e2e200;
+    font-size: 36px;
+}
