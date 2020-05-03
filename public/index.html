@@ -21,6 +21,7 @@
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="#" id="open" onclick="openImage()"><img src="open-icon.png"></a>
+<<<<<<< HEAD
         <a href="#" id="hand" onclick="changeTool('hand')"><img src="images/hand.png"></a>
         <a href="#" id="save" onclick="clearStrokes()"><img src="images/clear.png"></a>
         <a href="#" id="save" onclick="undo()"><img src="images/undo.png"></a>
@@ -33,6 +34,77 @@
         <a href="#" id="polygon" onclick="changeTool('polygon')"><img src="images/usuckalex.png"></a>
         <a href="#" id="rainbow" onclick="changeTool('rainbow')"><img src="images/rainbow.png"></a>
         <a href="#" id="text" onclick="changeTool('text')"><img src="images/ellipse.png"></a>
+=======
+        <a href="#" id="hand" onclick="changeTool('hand')">
+          <div class="tooltip">
+          <img src="images/hand.png">
+          <span class="tooltiptext">H</span>
+          </div>
+        </a>
+        <a href="#" id="save" onclick="clearStrokes()">
+          <div class="tooltip">
+          <img src="images/clear.png">
+          <span class="tooltiptext">C</span>
+          </div>
+        </a>
+        <a href="#" id="save" onclick="undo()">
+          <div class="tooltip">
+          <img src="images/undo.png">
+          <span class="tooltiptext">Z</span>
+          </div>
+        </a>
+        <a href="#" id="palette" onclick="openColorForm()">
+        <canvas id="palette-canvas">
+        </a>
+        <a class="selected" href="#" id="brush" onclick="changeTool('brush')">
+          <div class="tooltip">
+          <img src="images/brush.png">
+          <span class="tooltiptext">B</span>
+          </div>
+        </a>
+        <a href="#" id="line" onclick="changeTool('line')">
+          <div class="tooltip">
+          <img src="images/line.png">
+          <span class="tooltiptext">L</span>
+          </div>
+        </a>
+        <a href="#" id="rectangle" onclick="changeTool('rectangle')">
+          <div class="tooltip">
+          <img src="images/square.png">
+          <span class="tooltiptext">R</span>
+          </div>
+        </a>
+        <a href="#" id="circle" onclick="changeTool('circle')">
+          <div class="tooltip">
+          <img src="images/circle.png">
+          <span class="tooltiptext">O</span>
+          </div>
+        </a>
+        <a href="#" id="ellipse" onclick="changeTool('ellipse')">
+          <div class="tooltip">
+          <img src="images/ellipse.png">
+          <span class="tooltiptext">E</span>
+          </div>
+        </a>
+        <a href="#" id="polygon" onclick="changeTool('polygon')">
+          <div class="tooltip">
+          <img src="images/usuckalex.png">
+          <span class="tooltiptext">X</span>
+          </div>
+        </a>
+        <a href="#" id="rainbow" onclick="changeTool('rainbow')">
+          <div class="tooltip">
+          <img src="images/rainbow.png">
+          <span class="tooltiptext">G</span>
+          </div>
+        </a>
+        <a href="#" id="text" onclick="changeTool('text')">
+        <div class="tooltip">
+          <img src="images/type.png">
+          <span class="tooltiptext">T</span>
+          </div>
+        </a>
+>>>>>>> alex2-electric-boogaloo
     </div>
 
     <div class="colorFormPopup" id = "colorForm">

@@ -222,9 +222,9 @@ function getPolygon(shouldDraw) {
         }
         ctx.closePath();
     } else {
-        points = [(polygonPoints[0].x - xOffset)/zoom, (polygonPoints[0].y - yOffset)/zoom];
+        points = [(polygonPoints[0].x - xOffset) / zoom, (polygonPoints[0].y - yOffset) / zoom];
         for (let i = 1; i < polygonSides; i++) {
-            points.push((polygonPoints[i].x - xOffset)/zoom, (polygonPoints[i].y - yOffset)/zoom)
+            points.push((polygonPoints[i].x - xOffset) / zoom, (polygonPoints[i].y - yOffset) / zoom)
         }
     }
 
@@ -278,8 +278,8 @@ function updateRubberbandOnMove(loc) {
 
 function addBrushPoint(x, y, mouseDown) {
     currentStroke["points"].push({
-        "x": (x - xOffset)/zoom,
-        "y": (y - yOffset)/zoom,
+        "x": (x - xOffset) / zoom,
+        "y": (y - yOffset) / zoom,
         "mDown": mouseDown
     });
 }
@@ -291,12 +291,12 @@ function drawCur() {
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
         if (currentStroke["points"][j]["mDown"]) {
-            ctx.moveTo(currentStroke["points"][j - 1]["x"]*zoom + xOffset, currentStroke["points"][j - 1]["y"]*zoom + yOffset);
+            ctx.moveTo(currentStroke["points"][j - 1]["x"] * zoom + xOffset, currentStroke["points"][j - 1]["y"] * zoom + yOffset);
         } else {
-            ctx.moveTo(currentStroke["points"][j]["x"]*zoom - 1 + xOffset, currentStroke["points"][j]["y"]*zoom + yOffset);
+            ctx.moveTo(currentStroke["points"][j]["x"] * zoom - 1 + xOffset, currentStroke["points"][j]["y"] * zoom + yOffset);
         }
 
-        ctx.lineTo(currentStroke["points"][j]["x"]*zoom + xOffset, currentStroke["points"][j]["y"]*zoom + yOffset);
+        ctx.lineTo(currentStroke["points"][j]["x"] * zoom + xOffset, currentStroke["points"][j]["y"] * zoom + yOffset);
         ctx.closePath();
         ctx.stroke();
     }
@@ -305,6 +305,20 @@ function drawCur() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#c4c4c4";
+    let gridSize = 50;
+    while (gridSize * zoom < 30) {
+        gridSize = gridSize * 10;
+    }
+    while (gridSize * zoom > 500) {
+        gridSize = gridSize / 10;
+    }
+    for (let i = xOffset % (gridSize * zoom); i < canvas.width; i += gridSize * zoom) {
+        for (let j = yOffset % (gridSize * zoom); j < canvas.height; j += gridSize * zoom) {
+            ctx.fillRect(i - 1, j - 1, 3, 3);
+        }
+    }
 
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
@@ -315,36 +329,36 @@ function draw() {
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
                     if (allPoints[i]["points"][j]["mDown"]) {
-                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"]*zoom + xOffset, allPoints[i]["points"][j - 1]["y"]*zoom + yOffset);
+                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"] * zoom + xOffset, allPoints[i]["points"][j - 1]["y"] * zoom + yOffset);
                     } else {
-                        ctx.moveTo(allPoints[i]["points"][j]["x"]*zoom - 1 + xOffset, allPoints[i]["points"][j]["y"]*zoom + yOffset);
+                        ctx.moveTo(allPoints[i]["points"][j]["x"] * zoom - 1 + xOffset, allPoints[i]["points"][j]["y"] * zoom + yOffset);
                     }
 
-                    ctx.lineTo(allPoints[i]["points"][j]["x"]*zoom + xOffset, allPoints[i]["points"][j]["y"]*zoom + yOffset);
+                    ctx.lineTo(allPoints[i]["points"][j]["x"] * zoom + xOffset, allPoints[i]["points"][j]["y"] * zoom + yOffset);
                     ctx.closePath();
                     ctx.stroke();
                 }
                 ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
-                ctx.moveTo(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1] + yOffset);
-                ctx.lineTo(allPoints[i]["points"][2]*zoom + xOffset, allPoints[i]["points"][3] + yOffset);
+                ctx.moveTo(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] + yOffset);
+                ctx.lineTo(allPoints[i]["points"][2] * zoom + xOffset, allPoints[i]["points"][3] + yOffset);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "rectangle") {
-                ctx.strokeRect(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
+                ctx.strokeRect(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
             } else if (allPoints[i]["shape"] == "circle") {
                 ctx.beginPath();
-                ctx.arc(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3], allPoints[i]["points"][4]);
+                ctx.arc(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3], allPoints[i]["points"][4]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "ellipse") {
                 ctx.beginPath();
-                ctx.ellipse(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom, allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
+                ctx.ellipse(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom, allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "polygon") {
                 ctx.beginPath();
-                ctx.moveTo(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset);
+                ctx.moveTo(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset);
                 for (let j = 2; j < allPoints[i]["points"].length; j += 2) {
-                    ctx.lineTo(allPoints[i]["points"][j]*zoom + xOffset, allPoints[i]["points"][j + 1]*zoom + yOffset);
+                    ctx.lineTo(allPoints[i]["points"][j] * zoom + xOffset, allPoints[i]["points"][j + 1] * zoom + yOffset);
                 }
                 ctx.closePath();
                 ctx.stroke();
@@ -424,18 +438,20 @@ function reactKeyDown(e) {
 
 function reactToZoom(e) {
     event.preventDefault();
-    
+
     let oldZoom = zoom;
     if (e.deltaY > 0) {
-        zoom *= 9/10;
+        zoom *= 9 / 10;
     } else {
-        zoom /= 9/10;
+        zoom /= 9 / 10;
     }
 
     let scaleChange = zoom - oldZoom;
 
-    xOffset += e.clientX * scaleChange * -1;
-    yOffset += e.clientY * scaleChange * -1;
+    xOffset = e.clientX - zoom * (e.clientX - xOffset) / oldZoom;
+    yOffset = e.clientY - zoom * (e.clientY - yOffset) / oldZoom;
+    /*xOffset += e.clientX * scaleChange * -1;
+    yOffset += e.clientY * scaleChange * -1;*/
 
     draw();
 }
@@ -457,13 +473,13 @@ function reactToMouseUp(e) {
     if (currentTool == "brush") {
         points = currentStroke["points"];
     } else if (currentTool == "line") {
-        points = [(mousedown.x - xOffset)/zoom, mousedown.y, (loc.x - xOffset)/zoom, loc.y];
+        points = [(mousedown.x - xOffset) / zoom, mousedown.y, (loc.x - xOffset) / zoom, loc.y];
     } else if (currentTool == "rectangle") {
-        points = [(shapeBoundingBox.left - xOffset)/zoom, (shapeBoundingBox.top - yOffset)/zoom, shapeBoundingBox.width/zoom, shapeBoundingBox.height/zoom];
+        points = [(shapeBoundingBox.left - xOffset) / zoom, (shapeBoundingBox.top - yOffset) / zoom, shapeBoundingBox.width / zoom, shapeBoundingBox.height / zoom];
     } else if (currentTool == "circle") {
-        points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, shapeBoundingBox.width/zoom, 0, Math.PI * 2];
+        points = [(mousedown.x - xOffset) / zoom, (mousedown.y - yOffset) / zoom, shapeBoundingBox.width / zoom, 0, Math.PI * 2];
     } else if (currentTool == "ellipse") {
-        points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, (shapeBoundingBox.width / 2)/zoom, (shapeBoundingBox.height / 2)/zoom, Math.PI / 4, 0, Math.PI * 2];
+        points = [(mousedown.x - xOffset) / zoom, (mousedown.y - yOffset) / zoom, (shapeBoundingBox.width / 2) / zoom, (shapeBoundingBox.height / 2) / zoom, Math.PI / 4, 0, Math.PI * 2];
     } else if (currentTool == "polygon") {
         points = getPolygon(false);
     } else if (currentTool == "text") {
