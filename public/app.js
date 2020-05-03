@@ -294,15 +294,15 @@ function draw() {
 
     ctx.fillStyle = "#c4c4c4";
     let gridSize = 50;
-    while(gridSize * zoom < 30) {
+    while (gridSize * zoom < 30) {
         gridSize = gridSize * 10;
     }
-    while(gridSize * zoom > 500) {
+    while (gridSize * zoom > 500) {
         gridSize = gridSize / 10;
     }
     for (let i = xOffset % (gridSize * zoom); i < canvas.width; i += gridSize * zoom) {
         for (let j = yOffset % (gridSize * zoom); j < canvas.height; j += gridSize * zoom) {
-            ctx.fillRect(i-1, j-1, 3, 3);
+            ctx.fillRect(i - 1, j - 1, 3, 3);
         }
     }
 
@@ -416,8 +416,10 @@ function reactToZoom(e) {
 
     let scaleChange = zoom - oldZoom;
 
-    xOffset += e.clientX * scaleChange * -1;
-    yOffset += e.clientY * scaleChange * -1;
+    xOffset = e.clientX - zoom * (e.clientX - xOffset) / oldZoom;
+    yOffset = e.clientY - zoom * (e.clientY - yOffset) / oldZoom;
+    /*xOffset += e.clientX * scaleChange * -1;
+    yOffset += e.clientY * scaleChange * -1;*/
 
     draw();
 }
