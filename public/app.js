@@ -105,7 +105,6 @@ function drawPalette() {
 }
 
 function changeTool(toolClicked) {
-    document.getElementById("open").className = "";
     document.getElementById("save").className = "";
     document.getElementById("brush").className = "";
     document.getElementById("line").className = "";
@@ -323,7 +322,7 @@ function draw() {
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
             setStrokeStyle(allPoints[i]["colour"]);
-            ctx.lineWidth = allPoints[i]["strokeWeight"];
+            ctx.lineWidth = allPoints[i]["strokeWeight"]*zoom;
             if (allPoints[i]["shape"] == "brush") {
                 ctx.lineJoin = "round";
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
@@ -362,6 +361,8 @@ function draw() {
                 }
                 ctx.closePath();
                 ctx.stroke();
+            } else if (allPoints[i]["shape"] == "text") {
+                ctx.fillText(allPoints[i]["text"], allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset);
             }
         }
     }
@@ -426,6 +427,7 @@ function reactKeyPressed(e) {
 }
 
 function reactKeyDown(e) {
+    console.log(e);
     if (currentTool == "text") {
         if (e.keyCode == 8 && typingMessage.length > 0) {
             typingMessage = typingMessage.substring(0, typingMessage.length - 1);
@@ -450,8 +452,8 @@ function reactToZoom(e) {
 
     xOffset = e.clientX - zoom * (e.clientX - xOffset) / oldZoom;
     yOffset = e.clientY - zoom * (e.clientY - yOffset) / oldZoom;
-    /*xOffset += e.clientX * scaleChange * -1;
-    yOffset += e.clientY * scaleChange * -1;*/
+    
+    ctx.font = `${((Math.floor((lineWidth - 2) * 2 / 10) + 1)*4 + 10)*zoom}px Comic Sans MS`;
 
     draw();
 }
@@ -469,6 +471,23 @@ function reactToMouseUp(e) {
 
     dragging = false;
     usingBrush = false;
+
+    if (currentTool == "text" && typingMessage != "") {
+        ids.push(uuidv4());
+
+        allPoints.push({
+            "shape": currentTool,
+            "id": ids[ids.length - 1],
+            "strokeWeight": lineWidth,
+            "colour": strokeColor,
+            "points": [(typingX - xOffset)/zoom, (typingY - yOffset)/zoom],
+            "text": typingMessage
+        });
+
+        push();
+
+        typingMessage = "";
+    }
 
     if (currentTool == "brush") {
         points = currentStroke["points"];
