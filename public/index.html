@@ -92,6 +92,9 @@
             <span class="tooltiptext">E</span>
           </div>
         </a>
+        <a href="#" id="home" onclick="openOpacityForm()">
+          <img src="images/opacity.png">
+        </a>
         <a href="#" id="home" onclick="home()">
           <img src="images/home.png">
         </a>
@@ -109,6 +112,11 @@
       <input type="range" value="0" id="strokeChoice" step = "10"onchange="changeStroke()"/>
       <a href="#" class="closeStrokePicker" onclick="closeStrokeForm()">&times;</a>
       <p>Stroke Weight: <span id="weightVal"></span></p>
+    </div>
+    <div class="opacityPopup" id = "opacityForm">
+      <input type="range" value="100" id="opacityChoice" onchange="changeOpacity()"/>
+      <a href="#" class="closeOpacityPicker" onclick="closeOpacityForm()">&times;</a>
+      <p>Opacity: <span id="opacityVal"></span></p>
     </div>
 
     <div class="wrapper">

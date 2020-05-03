@@ -144,6 +144,27 @@ p {
     color: red;
 }
 
+.opacityPopup {
+    margin: 2px;
+    display: none;
+    position: fixed;
+    top: 770px;
+    left: 50px;
+    border: none;
+    z-index: 9000;
+}
+
+.opacityPopup .closeOpacityPicker {
+    text-decoration: none;
+    color: #000;
+    background-color: #E2e2e200;
+    font-size: 36px;
+}
+.opacityPopup .closeOpacityPicker:hover {
+    color: red;
+}
+
+
 input[type="range"] {
     -webkit-appearance: none;
     width: 160px;
