@@ -110,6 +110,10 @@ function changeTool(toolClicked) {
     document.getElementById(toolClicked).className = "selected";
     currentTool = toolClicked;
 
+    canvas.style.cursor = "crosshair";
+    if (currentTool == "hand") {
+        canvas.style.cursor = "grab";
+    }
     if (currentTool == "brush") {
         openStrokeForm();
     }
@@ -323,6 +327,9 @@ function draw() {
 
 function reactToMouseDown(e) {
     canvas.style.cursor = "crosshair";
+    if (currentTool == "hand") {
+        canvas.style.cursor = "grabbing";
+    }
     loc = getMousePosition(e.clientX, e.clientY);
     mousedown.x = loc.x;
     mousedown.y = loc.y;
@@ -344,7 +351,7 @@ function reactToMouseDown(e) {
 };
 
 function reactToMouseMove(e) {
-    canvas.style.cursor = "crosshair";
+    //canvas.style.cursor = "crosshair";
     loc = getMousePosition(e.clientX, e.clientY);
 
     if (currentTool == "brush" && dragging && usingBrush) {
@@ -396,7 +403,10 @@ function reactToZoom(e) {
 }
 
 function reactToMouseUp(e) {
-    canvas.style.cursor = "default";
+    //canvas.style.cursor = "default";
+    if (currentTool == "hand") {
+        canvas.style.cursor = "grab";
+    }
     loc = getMousePosition(e.clientX, e.clientY);
     draw()
     updateRubberbandOnMove(loc);
