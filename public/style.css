@@ -279,6 +279,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .login-button{
     background-color: #555;
+    font-size: 1.5em;
     color: white;
     padding: 16px 20px;
     border: none;
@@ -286,11 +287,12 @@ input[type="range"]::-webkit-slider-thumb {
     opacity: 0.8;
     position: fixed;
     bottom: 23px;
-    right: 28px;
-    width: 280px;
+    right: 50px;
+    width: 100px;
 }
 .open-button {
     display: none;
+    font-size: 1.5em;
     background-color: #555;
     color: white;
     padding: 16px 20px;
@@ -299,8 +301,8 @@ input[type="range"]::-webkit-slider-thumb {
     opacity: 0.8;
     position: fixed;
     bottom: 23px;
-    right: 28px;
-    width: 280px;
+    right: 50px;
+    width: 100px;
   }
   
   /* The popup chat - hidden by default */
@@ -311,15 +313,13 @@ input[type="range"]::-webkit-slider-thumb {
     right: 15px;
     border: 3px solid #f1f1f1;
     z-index: 9;
-  }
-  
-  /* Add styles to the form container */
-  .chat-popup {
     max-width: 250px;
     padding: 10px;
     background-color: white;
   }
-  
+  .chat-popup h3{
+      text-align: center;
+  }
   /* Full-width textarea */
   .chat-popup textarea {
     position: relative;
@@ -347,7 +347,7 @@ input[type="range"]::-webkit-slider-thumb {
   }
   .chat-popup .chatArea #chatBox{
     list-style-type:none;
-    margin: none;
+    margin: 3px;
     padding: 3px;
     overflow: auto;
     max-height: 100px;
@@ -357,7 +357,7 @@ input[type="range"]::-webkit-slider-thumb {
     display:inline-block;
     background-color: #4CAF50;
     position: relative;
-    margin: none;
+    margin: 0;
     color: white;
     padding: 5px;
     border: none;
@@ -383,3 +383,6 @@ input[type="range"]::-webkit-slider-thumb {
     font-size: 36px;
 }
 
+h3{
+    margin: 0;
+}
