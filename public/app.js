@@ -379,9 +379,12 @@ function draw() {
     }
 }
 
+let middleMouseDown = false;
+
 function reactToMouseDown(e) {
     canvas.style.cursor = "crosshair";
-    if (currentTool == "hand") {
+    if (currentTool == "hand" || e.button == 1) {
+        middleMouseDown = true;
         canvas.style.cursor = "grabbing";
     } else if (currentTool == "text") {
         canvas.style.cursor = "text";
@@ -410,16 +413,16 @@ function reactToMouseMove(e) {
     //canvas.style.cursor = "crosshair";
     loc = getMousePosition(e.clientX, e.clientY);
 
-    if (currentTool == "brush" && dragging && usingBrush) {
+    if (middleMouseDown) {
+        xOffset = loc.x - mousedown.x + oldXOffset;
+        yOffset = loc.y - mousedown.y + oldYOffset;
+        draw();
+    } else if (currentTool == "brush" && dragging && usingBrush) {
         if (loc.x > 0 && loc.x < canvasWidth && loc.y > 0 && loc.y < canvasHeight) {
             addBrushPoint(loc.x, loc.y, true);
         }
         draw();
         drawCur();
-    } else if (currentTool == "hand" && dragging) {
-        xOffset = loc.x - mousedown.x + oldXOffset;
-        yOffset = loc.y - mousedown.y + oldYOffset;
-        draw();
     } else {
         if (dragging) {
             draw();
@@ -498,9 +501,15 @@ function reactToZoom(e) {
 }
 
 function reactToMouseUp(e) {
+
+    middleMouseDown = false;
+
     //canvas.style.cursor = "default";
     if (currentTool == "hand") {
         canvas.style.cursor = "grab";
+    }
+    if (e.button == 1) {
+        canvas.style.cursor = "crosshair";
     }
     loc = getMousePosition(e.clientX, e.clientY);
     draw()
@@ -545,7 +554,7 @@ function reactToMouseUp(e) {
         typingY = loc.y;
     }
 
-    if (currentTool != "hand" && currentTool != "text") {
+    if (currentTool != "hand" && currentTool != "text" && e.button != 1) {
         ids.push(uuidv4());
 
         allPoints.push({
