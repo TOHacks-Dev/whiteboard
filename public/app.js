@@ -143,7 +143,7 @@ function changeTool(toolClicked) {
         strokeColor = "rainbow";
         currentTool = "brush";
     } else if (currentTool == "text") {
-        canvas.style.cursor = "auto";
+        canvas.style.cursor = "text";
         typingMessage = "";
     }
 }
@@ -372,6 +372,9 @@ function reactToMouseDown(e) {
     canvas.style.cursor = "crosshair";
     if (currentTool == "hand") {
         canvas.style.cursor = "grabbing";
+    }
+    else if(currentTool=="text"){
+        canvas.style.cursor = "text";
     }
     loc = getMousePosition(e.clientX, e.clientY);
     mousedown.x = loc.x;
