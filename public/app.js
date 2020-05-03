@@ -423,6 +423,12 @@ function reactKeyPressed(e) {
             draw();
             ctx.fillText(typingMessage, typingX, typingY);
         }
+    } else {
+        if(e.key == 'h') {
+            changeTool('hand');
+        } else if(e.key == 'w') {
+            clearStrokes();
+        }
     }
 }
 
