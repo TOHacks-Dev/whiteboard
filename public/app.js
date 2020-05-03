@@ -43,6 +43,8 @@ let typingMessage = "";
 let pStrokeColor = "";
 let erasing = false;
 
+let allMessages = []
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
@@ -644,7 +646,8 @@ function undo() {
 
 function clearStrokes() {
     board.update({
-        strokes: []
+        strokes: [],
+        messages: []
     });
 }
 
@@ -690,6 +693,7 @@ document.addEventListener("DOMContentLoaded", event => {
     board.onSnapshot(doc => {
         const data = doc.data();
         allPoints = data["strokes"];
+        allMessages = data["messages"];
         draw();
     })
 });
@@ -833,6 +837,7 @@ function opacityToHex(opacity) {
     }
     return opacity.toString(16);
 }
+
 function openPaletteForms(){
     openColorForm()
     openOpacityForm();
@@ -846,4 +851,15 @@ function googleLogin() {
         user = result.user;
     })
     .catch(console.log);
+}
+
+function pushMessage() {
+    board.update({
+        messages: firebase.firestore.FieldValue.arrayUnion({
+            "user": user.displayName,
+            "content": document.getElementById("messageBox").innerHTML
+        })
+    });
+
+    document.getElementById("messageBox").innerHTML = ""
 }
