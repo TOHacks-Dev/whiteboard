@@ -42,7 +42,7 @@ body {
 }
 
 .sidenav a {
-    padding: 8px 8px;
+    padding: 4px 8px;
     text-decoration: none;
     font-size: 25px;
     color: BLACK;
@@ -106,7 +106,7 @@ p {
     margin: 2px;
     display: none;
     position: fixed;
-    top: 185px;
+    top: 230px;
     left: 50px;
     border: none;
     z-index: 9000;
@@ -148,7 +148,7 @@ p {
     margin: 2px;
     display: none;
     position: fixed;
-    top: 220px;
+    top: 770px;
     left: 50px;
     border: none;
     z-index: 9000;
@@ -259,6 +259,7 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    max-height: 70%;
 }
 
 /* The Close Button */
