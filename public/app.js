@@ -874,7 +874,8 @@ function pushMessage() {
     board.update({
         messages: firebase.firestore.FieldValue.arrayUnion({
             "user": user.displayName,
-            "content": messageBox.value
+            "content": messageBox.value,
+            "id": uuidv4()
         })
     });
 
