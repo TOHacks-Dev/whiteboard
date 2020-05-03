@@ -1,6 +1,11 @@
 let canvas;
 let ctx;
 
+var auth = firebase.auth();
+var storageRef = firebase.storage().ref();
+
+let loadedImgs = {};
+
 let paletteCanvas;
 let paletteCtx;
 
@@ -18,6 +23,9 @@ let canvasHeight = 1000;
 
 let usingBrush = false;
 let currentStroke = {};
+
+let imgName = "";
+let imgObj;
 
 let app;
 let db;
@@ -102,6 +110,25 @@ function setupCanvas() {
     ctx.font = "30px Comic Sans MS";
 
     rainbow();
+
+    document.getElementById('file').addEventListener('change', handleFileSelect, false);
+    document.getElementById('file').disabled = true;
+
+    auth.onAuthStateChanged(function (user) {
+        if (user) {
+            console.log('Anonymous user signed-in.', user);
+            document.getElementById('file').disabled = false;
+        } else {
+            console.log('There was no anonymous session. Creating a new anonymous user.');
+            // Sign the user in anonymously since accessing Storage requires the user to be authorized.
+            auth.signInAnonymously().catch(function (error) {
+                if (error.code === 'auth/operation-not-allowed') {
+                    window.alert('Anonymous Sign-in failed. Please make sure that you have enabled anonymous ' +
+                        'sign-in on your Firebase project.');
+                }
+            });
+        }
+    });
 }
 
 function drawPalette() {
@@ -113,7 +140,7 @@ function drawPalette() {
     paletteCtx.drawImage(paletteImg, 0, 0, paletteCanvas.width, paletteCanvas.height);
 }
 
-function changeTool(toolClicked) {
+function changeTool(toolClicked, openForms = true) {
     document.getElementById("save").className = "";
     document.getElementById("brush").className = "";
     document.getElementById("line").className = "";
@@ -125,6 +152,7 @@ function changeTool(toolClicked) {
     document.getElementById("rainbow").className = "";
     document.getElementById("text").className = "";
     document.getElementById("eraser").className = "";
+    document.getElementById("image").className = "";
     document.getElementById(toolClicked).className = "selected";
 
     if (currentTool == "text" && typingMessage != "") {
@@ -152,7 +180,7 @@ function changeTool(toolClicked) {
     canvas.style.cursor = "crosshair";
     if (currentTool == "hand") {
         canvas.style.cursor = "grab";
-    } else if (currentTool == "brush") {
+    } else if (currentTool == "brush" && openForms) {
         openStrokeForm();
     } else if (currentTool == "rainbow") {
         strokeColor = "rainbow";
@@ -297,6 +325,8 @@ function drawRubberbandShape(loc) {
     } else if (currentTool == "text") {
         setFillStyle(strokeColor);
         ctx.fillText(typingMessage, typingX, typingY);
+    } else if (currentTool == "image") {
+        ctx.drawImage(imgObj, shapeBoundingBox.left, shapeBoundingBox.top, shapeBoundingBox.width, shapeBoundingBox.height);
     }
 }
 
@@ -317,18 +347,16 @@ function drawCur() {
     setStrokeStyle(currentStroke["colour"]);
     ctx.lineWidth = currentStroke["strokeWeight"];
     ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.beginPath();
     for (let j = 1; j < currentStroke["points"].length; ++j) {
-        ctx.beginPath();
-        if (currentStroke["points"][j]["mDown"]) {
+        if (j == 1) {
             ctx.moveTo(currentStroke["points"][j - 1]["x"] * zoom + xOffset, currentStroke["points"][j - 1]["y"] * zoom + yOffset);
-        } else {
-            ctx.moveTo(currentStroke["points"][j]["x"] * zoom - 1 + xOffset, currentStroke["points"][j]["y"] * zoom + yOffset);
         }
-
         ctx.lineTo(currentStroke["points"][j]["x"] * zoom + xOffset, currentStroke["points"][j]["y"] * zoom + yOffset);
-        ctx.closePath();
-        ctx.stroke();
     }
+    ctx.stroke();
+    //ctx.closePath();
     ctx.lineJoin = "miter";
 }
 
@@ -355,19 +383,17 @@ function draw() {
             setStrokeStyle(allPoints[i]["colour"]);
             ctx.lineWidth = allPoints[i]["strokeWeight"] * zoom;
             if (allPoints[i]["shape"] == "brush") {
+                ctx.beginPath();
                 ctx.lineJoin = "round";
+                ctx.lineCap = "round";
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
-                    ctx.beginPath();
-                    if (allPoints[i]["points"][j]["mDown"]) {
+                    if (j == 1) {
                         ctx.moveTo(allPoints[i]["points"][j - 1]["x"] * zoom + xOffset, allPoints[i]["points"][j - 1]["y"] * zoom + yOffset);
-                    } else {
-                        ctx.moveTo(allPoints[i]["points"][j]["x"] * zoom - 1 + xOffset, allPoints[i]["points"][j]["y"] * zoom + yOffset);
                     }
-
                     ctx.lineTo(allPoints[i]["points"][j]["x"] * zoom + xOffset, allPoints[i]["points"][j]["y"] * zoom + yOffset);
-                    ctx.closePath();
-                    ctx.stroke();
                 }
+                //ctx.closePath();
+                ctx.stroke();
                 ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
@@ -395,6 +421,21 @@ function draw() {
             } else if (allPoints[i]["shape"] == "text") {
                 setFillStyle(allPoints[i]["colour"]);
                 ctx.fillText(allPoints[i]["text"], allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset);
+            } else if (allPoints[i]["shape"] == "image") {
+                if (loadedImgs[allPoints[i]["text"]] && loadedImgs[allPoints[i]["text"]].complete) {
+                    ctx.drawImage(loadedImgs[allPoints[i]["text"]], allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
+                } else {
+                    ctx.fillStyle = "#AAAAAA"
+                    ctx.fillRect(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
+                    var imgRef = storageRef.child('images/' + allPoints[i]["text"]);
+
+                    // Get the download URL
+                    imgRef.getDownloadURL().then(function (url) {
+                        loadedImgs[allPoints[i]["text"]] = new Image;
+                        loadedImgs[allPoints[i]["text"]].src = url;
+                        draw();
+                    })
+                }
             }
         }
     }
@@ -470,7 +511,7 @@ function reactKeyPressed(e) {
         } else if (e.key == 'z') {
             undo();
         } else if (e.key == 'b') {
-            changeTool('brush');
+            changeTool('brush', false);
         } else if (e.key == 'l') {
             changeTool('line');
         } else if (e.key == 'r') {
@@ -478,7 +519,7 @@ function reactKeyPressed(e) {
         } else if (e.key == 'c') {
             changeTool('circle');
         } else if (e.key == 'e') {
-            changeTool('ellipse');
+            changeTool('eraser');
         } else if (e.key == 'x') {
             changeTool('polygon');
         } else if (e.key == 'g') {
@@ -566,6 +607,23 @@ function reactToMouseUp(e) {
         typingMessage = "";
     }
 
+    if (currentTool == "image") {
+        points = [(shapeBoundingBox.left - xOffset) / zoom, (shapeBoundingBox.top - yOffset) / zoom, shapeBoundingBox.width / zoom, shapeBoundingBox.height / zoom];
+        ids.push(uuidv4());
+
+        allPoints.push({
+            "shape": currentTool,
+            "id": ids[ids.length - 1],
+            "strokeWeight": lineWidth / zoom,
+            "colour": strokeColor,
+            "points": points,
+            "text": imgName
+        });
+
+        push();
+        changeTool("brush", false);
+        return;
+    }
     if (currentTool == "brush") {
         points = currentStroke["points"];
     } else if (currentTool == "line") {
@@ -717,7 +775,7 @@ function closeColorForm() {
 
 function changeColor() {
     let temp = strokeColor.substring(7);
-    strokeColor = document.getElementById("colorChoice").value+temp;
+    strokeColor = document.getElementById("colorChoice").value + temp;
     drawPalette();
 }
 
@@ -801,6 +859,9 @@ let span = document.getElementsByClassName("close")[0];
 // When the user clicks the button, open the modal 
 function openModal() {
     modal.style.display = "block";
+    document.getElementById('linkbox').innerHTML = "";
+    document.getElementById('file').value = "";
+    document.getElementById('insert-image').disabled = true;
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -838,10 +899,6 @@ function opacityToHex(opacity) {
     return opacity.toString(16);
 }
 
-function openPaletteForms(){
-    openColorForm()
-    openOpacityForm();
-}
 function openChat() {
     document.getElementById("chat").style.display = "block";
     document.getElementById("open-button").style.display = "none";
@@ -892,4 +949,54 @@ function updateMessages() {
     }
 
     currentMessages = allMessages;
+}
+
+function openPaletteForms() {
+    openColorForm()
+    openOpacityForm();
+}
+
+function handleFileSelect(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    var file = evt.target.files[0];
+
+    console.log(file)
+
+    var metadata = {
+        'contentType': file.type
+    };
+
+    // Push to child path.
+    // [START oncomplete]
+
+    imgName = uuidv4() + file.name.split('.').pop();;
+
+    storageRef.child('images/' + imgName).put(file, metadata).then(function (snapshot) {
+        console.log('Uploaded', snapshot.totalBytes, 'bytes.');
+        console.log('File metadata:', snapshot.metadata);
+        // Let's get a download URL for the file.
+        snapshot.ref.getDownloadURL().then(function (url) {
+            console.log('File available at', url);
+            // [START_EXCLUDE]
+            document.getElementById('linkbox').innerHTML = `<img id="linkboximg" src="${url}"></img>`;
+
+            document.getElementById('linkboximg').onload = () => {
+                document.getElementById('insert-image').disabled = false;
+            };
+            // [END_EXCLUDE]
+        });
+    }).catch(function (error) {
+        // [START onfailure]
+        console.error('Upload failed:', error);
+        // [END onfailure]
+    });
+    // [END oncomplete]
+}
+
+function addImg() {
+    modal.style.display = "none";
+    changeTool("image");
+
+    imgObj = document.getElementById('linkboximg');
 }

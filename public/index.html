@@ -8,14 +8,15 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.14.2/firebase-app.js"></script>
+    <script src="/__/firebase/7.14.2/firebase-app.js"></script>
     <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.14.2/firebase-auth.js"></script>
+    <script src="/__/firebase/7.14.2/firebase-auth.js"></script>
     <script defer src="/__/firebase/7.14.2/firebase-database.js"></script>
     <script defer src="/__/firebase/7.14.2/firebase-messaging.js"></script>
     <script defer src="/__/firebase/7.14.2/firebase-firestore.js"></script>
+    <script src="/__/firebase/7.14.2/firebase-storage.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+    <script src="/__/firebase/init.js"></script>
   </head>
   <body>
     <div id="mySidenav" class="sidenav">
@@ -98,8 +99,8 @@
         <a href="#" id="download" onclick="saveImage()">
           <img src="images/download.png">
         </a>
-        <a href="#" id="open" onclick="openModal()">
-          <img src="images/home.png">
+        <a href="#" id="image" onclick="openModal()">
+          <img src="images/image.png">
         </a>
     </div>
 
@@ -126,7 +127,11 @@
       <!-- Modal content -->
       <div class="modal-content">
         <span class="close">&times;</span>
-        <p>Some text in the Modal..</p>
+        <p>Select an image below. When it is uploaded, it will be displayed.</p>
+        <h6>Choose File</h6>
+        <input type="file" id="file" name="file"/>
+        <div id="linkbox"></div>
+        <button id="insert-image" onclick="addImg()">Insert Image</button>
       </div>
 
     </div>
