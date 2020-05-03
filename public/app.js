@@ -575,7 +575,7 @@ function rainbow() {
     let stops = 36;
     let cycles = 3;
     for (let i = 0; i < 36; i++) {
-        rainbowGradient.addColorStop(`${i/stops}`, hsltorgb((i / stops * cycles) % 1, 0.95, 0.95));
+        rainbowGradient.addColorStop(`${i/stops}`, hsltorgb((i / stops * cycles) % 1, 1, 0.5));
     }
 
     /*rainbowGradient.addColorStop("0", c3);
@@ -585,7 +585,6 @@ function rainbow() {
     /*setTimeout(function () {
         rainbow();
     }, 10);*/
-}
 }
 
 function openStrokeForm() {
