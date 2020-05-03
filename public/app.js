@@ -239,6 +239,15 @@ function setStrokeStyle(strokeColor) {
     }
 }
 
+function setFillStyle(strokeColor) {
+
+    if (strokeColor == "rainbow") {
+        ctx.fillStyle = rainbowGradient;
+    } else {
+        ctx.fillStyle = strokeColor;
+    }
+}
+
 function drawRubberbandShape(loc) {
     setStrokeStyle(strokeColor);
     ctx.fillStyle = fillColor;
@@ -266,6 +275,7 @@ function drawRubberbandShape(loc) {
         getPolygon(true);
         ctx.stroke();
     } else if (currentTool == "text") {
+        setFillStyle(strokeColor);
         ctx.fillText(typingMessage, typingX, typingY);
     }
 }
@@ -362,6 +372,7 @@ function draw() {
                 ctx.closePath();
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "text") {
+                setFillStyle(allPoints[i]["colour"]);
                 ctx.fillText(allPoints[i]["text"], allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset);
             }
         }
@@ -421,6 +432,8 @@ function reactKeyPressed(e) {
             typingMessage += e.key;
         
             draw();
+
+            setFillStyle(strokeColor);
             ctx.fillText(typingMessage, typingX, typingY);
         }
     } else {
@@ -457,6 +470,8 @@ function reactKeyDown(e) {
             typingMessage = typingMessage.substring(0, typingMessage.length - 1);
 
             draw();
+
+            setFillStyle(strokeColor);
             ctx.fillText(typingMessage, typingX, typingY);
         }
     }
