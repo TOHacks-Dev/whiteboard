@@ -708,7 +708,8 @@ function closeColorForm() {
 }
 
 function changeColor() {
-    strokeColor = document.getElementById("colorChoice").value;
+    let temp = strokeColor.substring(8);
+    strokeColor = document.getElementById("colorChoice").value+temp;
     drawPalette();
 }
 
