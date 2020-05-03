@@ -516,6 +516,15 @@ function reactToZoom(e) {
     draw();
 }
 
+function home() {
+    oldXOffset = 0;
+    oldYOffset = 0;
+    xOffset = 0;
+    yOffset = 0;
+    zoom = 1;
+    draw();
+}
+
 function reactToMouseUp(e) {
 
     middleMouseDown = false;
