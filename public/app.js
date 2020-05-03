@@ -246,8 +246,8 @@ function updateRubberbandOnMove(loc) {
 
 function addBrushPoint(x, y, mouseDown) {
     currentStroke["points"].push({
-        "x": x - xOffset,
-        "y": y - yOffset,
+        "x": (x - xOffset)/zoom,
+        "y": (y - yOffset)/zoom,
         "mDown": mouseDown
     });
 }
@@ -406,12 +406,10 @@ function reactToMouseUp(e) {
     dragging = false;
     usingBrush = false;
 
-    // mousedown.x = allPoints[i]["points"][0]*zoom + xOffset
-
     if (currentTool == "brush") {
         points = currentStroke["points"];
     } else if (currentTool == "line") {
-        points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, (loc.x - xOffset)/zoom, (loc.y - yOffset)/zoom];
+        points = [(mousedown.x - xOffset)/zoom, mousedown.y, (loc.x - xOffset)/zoom, loc.y];
     } else if (currentTool == "rectangle") {
         points = [(shapeBoundingBox.left - xOffset)/zoom, (shapeBoundingBox.top - yOffset)/zoom, shapeBoundingBox.width/zoom, shapeBoundingBox.height/zoom];
     } else if (currentTool == "circle") {
