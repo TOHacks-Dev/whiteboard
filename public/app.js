@@ -854,12 +854,14 @@ function googleLogin() {
 }
 
 function pushMessage() {
+    let messageBox = document.getElementById("messageBox");
+
     board.update({
         messages: firebase.firestore.FieldValue.arrayUnion({
             "user": user.displayName,
-            "content": document.getElementById("messageBox").innerHTML
+            "content": messageBox.innerHTML
         })
     });
 
-    document.getElementById("messageBox").innerHTML = ""
+    messageBox.innerHTML = "";
 }
