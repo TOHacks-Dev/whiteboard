@@ -161,7 +161,7 @@ input[type="range"]::-webkit-slider-thumb {
 .tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    border: none;
 }
 
 .tooltip .tooltiptext {
@@ -178,7 +178,7 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 5px 0;
     position: absolute;
     z-index: 1;
-    top: 150%;
+    top: 120%;
     left: 50%;
     margin-left: -10px;
 }
@@ -192,7 +192,7 @@ input[type="range"]::-webkit-slider-thumb {
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent black transparent;
+    border-color: transparent transparent rgb(255, 255, 255) transparent;
 }
 
 .tooltip:hover .tooltiptext {
