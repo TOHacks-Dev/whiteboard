@@ -92,11 +92,17 @@
             <span class="tooltiptext">E</span>
           </div>
         </a>
+        <a href="#" id="home" onclick="openOpacityForm()">
+          <img src="images/opacity.png">
+        </a>
         <a href="#" id="home" onclick="home()">
           <img src="images/home.png">
         </a>
-        <a href="#" id="home" onclick="saveImage()">
+        <a href="#" id="download" onclick="saveImage()">
           <img src="images/download.png">
+        </a>
+        <a href="#" id="open" onclick="openModal()">
+          <img src="images/home.png">
         </a>
     </div>
 
@@ -110,8 +116,23 @@
       <a href="#" class="closeStrokePicker" onclick="closeStrokeForm()">&times;</a>
       <p>Stroke Weight: <span id="weightVal"></span></p>
     </div>
+    <div class="opacityPopup" id = "opacityForm">
+      <input type="range" value="100" id="opacityChoice" onchange="changeOpacity()"/>
+      <a href="#" class="closeOpacityPicker" onclick="closeOpacityForm()">&times;</a>
+      <p>Opacity: <span id="opacityVal"></span></p>
+    </div>
 
     <div class="wrapper">
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Some text in the Modal..</p>
+      </div>
+
+    </div>
       <span style="font-size:30px;cursor:pointer;position:absolute;left:10px;top:10px;user-select:none;" onclick="openNav()">&#9776;</span>
       <!--<button onclick="googleLogin()">Login with Google</button>-->
       <br>

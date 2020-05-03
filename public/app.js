@@ -7,8 +7,8 @@ let paletteCtx;
 let savedImageData;
 
 let dragging = false;
-let strokeColor = "black";
-let fillColor = "black";
+let strokeColor = "#000000";
+let fillColor = "#000000";
 let lineWidth = 2;
 let polygonSides = 6;
 
@@ -27,6 +27,8 @@ let ids = [];
 
 let output = document.getElementById("weightVal");
 output.innerHTML = 1;
+let opacityOutput = document.getElementById("opacityVal");
+opacityOutput.innerHTML = 255;
 let zoom = 1;
 let oldXOffset = 0;
 let oldYOffset = 0;
@@ -135,7 +137,7 @@ function changeTool(toolClicked) {
 
         push();
     }
-    
+
     if (erasing && toolClicked != "eraser") {
         erasing = false;
         strokeColor = pStrokeColor;
@@ -158,7 +160,7 @@ function changeTool(toolClicked) {
         currentTool = "brush";
         erasing = true;
         pStrokeColor = strokeColor;
-        strokeColor = "white";
+        strokeColor = "#ffffff";
     }
 }
 
@@ -778,4 +780,53 @@ function changeStroke() {
     let val = Math.floor((lineWidth - 2) * 2 / 10) + 1;
     output.innerHTML = val;
     ctx.font = `${val*4 + 10}px Comic Sans MS`;
+}
+
+// Get the modal
+let modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+let btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+let span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+function openModal() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+function openOpacityForm() {
+    document.getElementById("opacityForm").style.display = "block";
+}
+
+function closeOpacityForm() {
+    document.getElementById("opacityForm").style.display = "none";
+}
+
+function changeOpacity() {
+    strokeColor = strokeColor.substring(0, 7);
+    strokeColor += opacityToHex(Math.floor(document.getElementById("opacityChoice").value / 100 * 255));
+    console.log(strokeColor);
+    let val = Math.floor(document.getElementById("opacityChoice").value / 100 * 255);
+    opacityOutput.innerHTML = val;
+}
+
+function opacityToHex(opacity) {
+    if (opacity < 16) {
+        return `0${opacity.toString(16)}`;
+    }
+    return opacity.toString(16);
 }
