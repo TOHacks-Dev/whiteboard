@@ -25,6 +25,8 @@ let board;
 let allPoints = [];
 let ids = [];
 
+let output = document.getElementById("weightVal");
+output.innerHTML = 1;
 let zoom = 1;
 let oldXOffset = 0;
 let oldYOffset = 0;
@@ -104,6 +106,9 @@ function changeTool(toolClicked) {
     document.getElementById("hand").className = "";
     document.getElementById(toolClicked).className = "selected";
     currentTool = toolClicked;
+    if(currentTool=="brush"){
+        openStrokeForm();
+    }
 }
 
 function getMousePosition(x, y) {
@@ -233,9 +238,9 @@ function addBrushPoint(x, y, mouseDown) {
 function drawCur() {
     ctx.strokeStyle = currentStroke["colour"];
     ctx.lineWidth = currentStroke["strokeWeight"];
+    ctx.lineJoin = "round";
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
-
         if (currentStroke["points"][j]["mDown"]) {
             ctx.moveTo((currentStroke["points"][j - 1]["x"] + xOffset) * zoom, (currentStroke["points"][j - 1]["y"] + yOffset) * zoom);
         } else {
@@ -246,6 +251,7 @@ function drawCur() {
         ctx.closePath();
         ctx.stroke();
     }
+    ctx.lineJoin = "miter";
 }
 
 function draw() {
@@ -256,9 +262,9 @@ function draw() {
             ctx.strokeStyle = allPoints[i]["colour"];
             ctx.lineWidth = allPoints[i]["strokeWeight"];
             if (allPoints[i]["shape"] == "brush") {
+                ctx.lineJoin = "round";
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
-
                     if (allPoints[i]["points"][j]["mDown"]) {
                         ctx.moveTo((allPoints[i]["points"][j - 1]["x"] + xOffset) * zoom, (allPoints[i]["points"][j - 1]["y"] + yOffset) * zoom);
                     } else {
@@ -269,6 +275,7 @@ function draw() {
                     ctx.closePath();
                     ctx.stroke();
                 }
+                ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
                 ctx.moveTo((allPoints[i]["points"][0] + xOffset) * zoom, (allPoints[i]["points"][1] + yOffset) * zoom);
@@ -506,7 +513,20 @@ function closeColorForm() {
     document.getElementById("colorForm").style.display = "none";
 }
 
-function changeColor(col) {
+  function changeColor() {
     strokeColor = document.getElementById("colorChoice").value;
     drawPalette();
-}
+  }
+
+  function openStrokeForm() {
+    document.getElementById("strokeForm").style.display = "block";
+  }
+  
+  function closeStrokeForm() {
+    document.getElementById("strokeForm").style.display = "none";
+  }
+
+  function changeStroke() {
+    lineWidth = Math.floor(document.getElementById("strokeChoice").value/2)+2;
+    output.innerHTML = Math.floor((lineWidth-2)*2/10)+1;
+  }
