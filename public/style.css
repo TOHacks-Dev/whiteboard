@@ -339,7 +339,18 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: #ddd;
     outline: none;
   }
-  
+  .chat-popup .chatArea {
+    padding: none;
+    background-color: #ddd;
+    border: 5px;
+    border-color: maroon;
+    max-height: 200px;
+  }
+  .chat-popup .chatArea #chatBox{
+    list-style-type:none;
+    margin: none;
+    padding: 3px;
+  }
   /* Set a style for the submit/send button */
   .chat-popup .btn, .btn_cancel {
     display:inline-block;
