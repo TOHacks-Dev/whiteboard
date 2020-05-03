@@ -22,6 +22,7 @@ let currentStroke = {};
 let app;
 let db;
 let board;
+let user = null;
 let allPoints = [];
 let ids = [];
 
@@ -41,6 +42,8 @@ let typingMessage = "";
 
 let pStrokeColor = "";
 let erasing = false;
+
+let allMessages = []
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -643,7 +646,8 @@ function undo() {
 
 function clearStrokes() {
     board.update({
-        strokes: []
+        strokes: [],
+        messages: []
     });
 }
 
@@ -689,6 +693,7 @@ document.addEventListener("DOMContentLoaded", event => {
     board.onSnapshot(doc => {
         const data = doc.data();
         allPoints = data["strokes"];
+        allMessages = data["messages"];
         draw();
     })
 });
@@ -831,6 +836,7 @@ function opacityToHex(opacity) {
     }
     return opacity.toString(16);
 }
+
 function openPaletteForms(){
     openColorForm()
     openOpacityForm();
@@ -838,11 +844,29 @@ function openPaletteForms(){
 function openChat() {
     document.getElementById("chat").style.display = "block";
   }
-  function closeChat() {
+function closeChat() {
     document.getElementById("chat").style.display = "none";
   }
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+        user = result.user;
+        document.getElementById("login-button").style.display = "none";
+        document.getElementById("open-button").style.display = "block";
+    })
+    .catch(console.log);
+}
 
-function googleLogin(){
-    document.getElementById("login-button").style.display = "none";
-    document.getElementById("open-button").style.display = "block";
+function pushMessage() {
+    let messageBox = document.getElementById("messageBox");
+
+    board.update({
+        messages: firebase.firestore.FieldValue.arrayUnion({
+            "user": user.displayName,
+            "content": messageBox.innerHTML
+        })
+    });
+
+    messageBox.innerHTML = "";
 }
