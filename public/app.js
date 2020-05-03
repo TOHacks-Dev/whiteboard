@@ -489,7 +489,6 @@ function reactKeyPressed(e) {
 }
 
 function reactKeyDown(e) {
-    console.log(e);
     if (currentTool == "text") {
         if (e.keyCode == 8 && typingMessage.length > 0) {
             typingMessage = typingMessage.substring(0, typingMessage.length - 1);
@@ -868,12 +867,14 @@ function googleLogin() {
 function pushMessage() {
     let messageBox = document.getElementById("messageBox");
 
+    console.log(messageBox.value);
+
     board.update({
         messages: firebase.firestore.FieldValue.arrayUnion({
             "user": user.displayName,
-            "content": messageBox.innerHTML
+            "content": messageBox.value
         })
     });
 
-    messageBox.innerHTML = "";
+    messageBox.value = "";
 }
