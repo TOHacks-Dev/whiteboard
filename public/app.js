@@ -869,8 +869,6 @@ function googleLogin() {
 function pushMessage() {
     let messageBox = document.getElementById("messageBox");
 
-    console.log(messageBox.value);
-
     board.update({
         messages: firebase.firestore.FieldValue.arrayUnion({
             "user": user.displayName,
