@@ -33,6 +33,10 @@ let oldYOffset = 0;
 let xOffset = 0;
 let yOffset = 0;
 
+let typingX = 0;
+let typingY = 0;
+let typingMessage = "";
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
@@ -83,6 +87,7 @@ function setupCanvas() {
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
     canvas.addEventListener("wheel", reactToZoom);
+    canvas.addEventListener("keypress", reactKeyDown);
 
     rainbow();
 }
@@ -107,19 +112,26 @@ function changeTool(toolClicked) {
     document.getElementById("polygon").className = "";
     document.getElementById("hand").className = "";
     document.getElementById("rainbow").className = "";
+    document.getElementById("text").className = "";
     document.getElementById(toolClicked).className = "selected";
+
+    // if (currentTool == "text" && typingMessage != "") {
+    //     // send off the message
+    // }
+
     currentTool = toolClicked;
 
     canvas.style.cursor = "crosshair";
     if (currentTool == "hand") {
         canvas.style.cursor = "grab";
-    }
-    if (currentTool == "brush") {
+    } else if (currentTool == "brush") {
         openStrokeForm();
-    }
-    if (currentTool == "rainbow") {
+    } else if (currentTool == "rainbow") {
         strokeColor = "rainbow";
         currentTool = "brush";
+    } else if (currentTool == "text") {
+        canvas.style.cursor = "auto";
+        typingMessage = "";
     }
 }
 
@@ -240,6 +252,8 @@ function drawRubberbandShape(loc) {
     } else if (currentTool == "polygon") {
         getPolygon(true);
         ctx.stroke();
+    } else if (currentTool == "text") {
+        ctx.fillText(typingMessage, typingX, typingY);
     }
 }
 
@@ -372,6 +386,10 @@ function reactToMouseMove(e) {
     }
 };
 
+function reactKeyDown(e) {
+    console.log(e);
+}
+
 function reactToZoom(e) {
     event.preventDefault();
     
@@ -416,9 +434,12 @@ function reactToMouseUp(e) {
         points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, (shapeBoundingBox.width / 2)/zoom, (shapeBoundingBox.height / 2)/zoom, Math.PI / 4, 0, Math.PI * 2];
     } else if (currentTool == "polygon") {
         points = getPolygon(false);
+    } else if (currentTool == "text") {
+        typingX = loc.x;
+        typingY = loc.y;
     }
 
-    if (currentTool != "hand") {
+    if (currentTool != "hand" && currentTool != "text") {
         ids.push(uuidv4());
 
         allPoints.push({
