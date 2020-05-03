@@ -349,7 +349,7 @@ input[type="range"]::-webkit-slider-thumb {
   }
   
   /* Add a red background color to the cancel button */
-  .chat-popup.cancel {
+  .chat-popup .btn_cancel {
     background-color: red;
   }
   
