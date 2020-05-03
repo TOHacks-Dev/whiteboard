@@ -80,6 +80,7 @@ function setupCanvas() {
     canvas.addEventListener("mousedown", reactToMouseDown);
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
+    canvas.addEventListener("wheel", reactToZoom);
 }
 
 function drawPalette() {
@@ -339,6 +340,18 @@ function reactToMouseMove(e) {
         }
     }
 };
+
+function reactToZoom(e) {
+    event.preventDefault();
+    
+    if (e.deltaY < 0) {
+        zoom *= 9/10;
+    } else {
+        zoom *= 10/9;
+    }
+
+    draw();
+}
 
 function reactToMouseUp(e) {
     canvas.style.cursor = "default";
