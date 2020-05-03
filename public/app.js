@@ -886,7 +886,7 @@ function updateMessages() {
     
     for (let i = currentMessages.length; i < allMessages.length; ++i) {
         let item = document.createElement('li');
-        item.appendChild(document.createTextNode(`${allMessages[i][user]}: ${allMessages[i]["content"]}`));
+        item.appendChild(document.createTextNode(`${allMessages[i]["user"]}: ${allMessages[i]["content"]}`));
         chatBox.appendChild(item);
     }
 
