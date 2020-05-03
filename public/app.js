@@ -842,9 +842,11 @@ function openPaletteForms(){
 }
 function openChat() {
     document.getElementById("chat").style.display = "block";
+    document.getElementById("open-button").style.display = "none";
   }
 function closeChat() {
     document.getElementById("chat").style.display = "none";
+    document.getElementById("open-button").style.display = "block";
   }
 function googleLogin() {
     // const provider = new firebase.auth.GoogleAuthProvider();
