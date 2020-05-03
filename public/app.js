@@ -710,7 +710,9 @@ function closeColorForm() {
 }
 
 function changeColor() {
-    strokeColor = document.getElementById("colorChoice").value;
+    let temp = strokeColor.substring(7);
+    strokeColor = document.getElementById("colorChoice").value+temp;
+    console.log("here");
     drawPalette();
 }
 
@@ -829,4 +831,8 @@ function opacityToHex(opacity) {
         return `0${opacity.toString(16)}`;
     }
     return opacity.toString(16);
+}
+function openPaletteForms(){
+    openColorForm()
+    openOpacityForm();
 }
