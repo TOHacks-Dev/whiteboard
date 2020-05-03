@@ -830,3 +830,7 @@ function opacityToHex(opacity) {
     }
     return opacity.toString(16);
 }
+function openPaletteForms(){
+    openColorForm()
+    openOpacityForm();
+}
