@@ -7,8 +7,8 @@ let paletteCtx;
 let savedImageData;
 
 let dragging = false;
-let strokeColor = "black";
-let fillColor = "black";
+let strokeColor = "#000000";
+let fillColor = "#000000";
 let lineWidth = 2;
 let polygonSides = 6;
 
@@ -27,6 +27,8 @@ let ids = [];
 
 let output = document.getElementById("weightVal");
 output.innerHTML = 1;
+let opacityOutput = document.getElementById("opacityVal");
+opacityOutput.innerHTML = 255;
 let zoom = 1;
 let oldXOffset = 0;
 let oldYOffset = 0;
@@ -158,7 +160,7 @@ function changeTool(toolClicked) {
         currentTool = "brush";
         erasing = true;
         pStrokeColor = strokeColor;
-        strokeColor = "white";
+        strokeColor = "#ffffff";
     }
 }
 
@@ -767,4 +769,27 @@ function changeStroke() {
     let val = Math.floor((lineWidth - 2) * 2 / 10) + 1;
     output.innerHTML = val;
     ctx.font = `${val*4 + 10}px Comic Sans MS`;
+}
+
+function openOpacityForm() {
+    document.getElementById("opacityForm").style.display = "block";
+}
+
+function closeOpacityForm() {
+    document.getElementById("opacityForm").style.display = "none";
+}
+
+function changeOpacity() {
+    strokeColor = strokeColor.substring(0, 7);
+    strokeColor += opacityToHex(Math.floor(document.getElementById("opacityChoice").value / 100 * 255));
+    console.log(strokeColor);
+    let val = Math.floor(document.getElementById("opacityChoice").value / 100 * 255);
+    opacityOutput.innerHTML = val;
+}
+function opacityToHex(opacity){
+    if (opacity<16){
+        console.log("im crazy");
+        return `0${opacity.toString(16)}`;
+    }
+    return opacity.toString(16);
 }
