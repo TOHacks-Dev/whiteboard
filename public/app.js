@@ -22,6 +22,7 @@ let currentStroke = {};
 let app;
 let db;
 let board;
+let user = null;
 let allPoints = [];
 let ids = [];
 
@@ -835,4 +836,14 @@ function opacityToHex(opacity) {
 function openPaletteForms(){
     openColorForm()
     openOpacityForm();
+}
+
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+        user = result.user;
+    })
+    .catch(console.log);
 }
