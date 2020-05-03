@@ -340,8 +340,8 @@ function draw() {
                 ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
-                ctx.moveTo(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] + yOffset);
-                ctx.lineTo(allPoints[i]["points"][2] * zoom + xOffset, allPoints[i]["points"][3] + yOffset);
+                ctx.moveTo(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset);
+                ctx.lineTo(allPoints[i]["points"][2] * zoom + xOffset, allPoints[i]["points"][3]*zoom + yOffset);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "rectangle") {
                 ctx.strokeRect(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
@@ -454,8 +454,6 @@ function reactToZoom(e) {
         zoom /= 9 / 10;
     }
 
-    let scaleChange = zoom - oldZoom;
-
     xOffset = e.clientX - zoom * (e.clientX - xOffset) / oldZoom;
     yOffset = e.clientY - zoom * (e.clientY - yOffset) / oldZoom;
     
@@ -498,7 +496,7 @@ function reactToMouseUp(e) {
     if (currentTool == "brush") {
         points = currentStroke["points"];
     } else if (currentTool == "line") {
-        points = [(mousedown.x - xOffset) / zoom, mousedown.y, (loc.x - xOffset) / zoom, loc.y];
+        points = [(mousedown.x - xOffset) / zoom, (mousedown.y - yOffset)/zoom, (loc.x - xOffset) / zoom, (loc.y - yOffset)/zoom];
     } else if (currentTool == "rectangle") {
         points = [(shapeBoundingBox.left - xOffset) / zoom, (shapeBoundingBox.top - yOffset) / zoom, shapeBoundingBox.width / zoom, shapeBoundingBox.height / zoom];
     } else if (currentTool == "circle") {
