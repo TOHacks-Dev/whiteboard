@@ -313,16 +313,16 @@ function drawCur() {
     setStrokeStyle(currentStroke["colour"]);
     ctx.lineWidth = currentStroke["strokeWeight"];
     ctx.lineJoin = "round";
+    ctx.lineCap = "round";
     ctx.beginPath();
     for (let j = 1; j < currentStroke["points"].length; ++j) {
-        if (currentStroke["points"][j]["mDown"]) {
+        if (j==1) {
             ctx.moveTo(currentStroke["points"][j - 1]["x"] * zoom + xOffset, currentStroke["points"][j - 1]["y"] * zoom + yOffset);
         }
-
         ctx.lineTo(currentStroke["points"][j]["x"] * zoom + xOffset, currentStroke["points"][j]["y"] * zoom + yOffset);
     }
-    ctx.closePath();
     ctx.stroke();
+    //ctx.closePath();
     ctx.lineJoin = "miter";
 }
 
@@ -348,16 +348,16 @@ function draw() {
             setStrokeStyle(allPoints[i]["colour"]);
             ctx.lineWidth = allPoints[i]["strokeWeight"] * zoom;
             if (allPoints[i]["shape"] == "brush") {
-                ctx.lineJoin = "round";
                 ctx.beginPath();
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
-                    if (allPoints[i]["points"][j]["mDown"]) {
+                    if (j==1) {
                         ctx.moveTo(allPoints[i]["points"][j - 1]["x"] * zoom + xOffset, allPoints[i]["points"][j - 1]["y"] * zoom + yOffset);
                     }
-
                     ctx.lineTo(allPoints[i]["points"][j]["x"] * zoom + xOffset, allPoints[i]["points"][j]["y"] * zoom + yOffset);
                 }
-                ctx.closePath();
+                //ctx.closePath();
                 ctx.stroke();
                 ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
