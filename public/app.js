@@ -995,3 +995,14 @@ function addImg() {
 
     imgObj = document.getElementById('linkboximg');
 }
+function share(){
+    const cpyText = document.createElement('textarea');
+    cpyText.value = window.location.href;
+    document.body.appendChild(cpyText);
+    cpyText.select();
+    document.execCommand('copy');
+    document.body.removeChild(cpyText);
+    alert("Copied! ");
+}
+
+ 
