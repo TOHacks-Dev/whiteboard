@@ -87,7 +87,10 @@ function setupCanvas() {
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
     canvas.addEventListener("wheel", reactToZoom);
-    canvas.addEventListener("keypress", reactKeyDown);
+    document.addEventListener("keypress", reactKeyPressed);
+    document.addEventListener("keydown", reactKeyDown);
+    
+    ctx.font = "30px Comic Sans MS";
 
     rainbow();
 }
@@ -115,9 +118,20 @@ function changeTool(toolClicked) {
     document.getElementById("text").className = "";
     document.getElementById(toolClicked).className = "selected";
 
-    // if (currentTool == "text" && typingMessage != "") {
-    //     // send off the message
-    // }
+    if (currentTool == "text" && typingMessage != "") {
+        ids.push(uuidv4());
+
+        allPoints.push({
+            "shape": currentTool,
+            "id": ids[ids.length - 1],
+            "strokeWeight": lineWidth,
+            "colour": strokeColor,
+            "points": [(typingX - xOffset)/zoom, (typingY - yOffset)/zoom],
+            "text": typingMessage
+        });
+
+        push();
+    }
 
     currentTool = toolClicked;
 
@@ -386,8 +400,26 @@ function reactToMouseMove(e) {
     }
 };
 
+function reactKeyPressed(e) {
+    if (currentTool == "text") {
+        if (e.keyCode >= 32 && e.keyCode <= 126) {
+            typingMessage += e.key;
+        
+            draw();
+            ctx.fillText(typingMessage, typingX, typingY);
+        }
+    }
+}
+
 function reactKeyDown(e) {
-    console.log(e);
+    if (currentTool == "text") {
+        if (e.keyCode == 8 && typingMessage.length > 0) {
+            typingMessage = typingMessage.substring(0, typingMessage.length - 1);
+
+            draw();
+            ctx.fillText(typingMessage, typingX, typingY);
+        }
+    }
 }
 
 function reactToZoom(e) {
@@ -616,10 +648,6 @@ function rainbow() {
         h3 -= 1;
     }
 
-    var c3 = hsltorgb(h3, 0.75, 0.75);
-    var c2 = hsltorgb(h2, 0.75, 0.75);
-    var c1 = hsltorgb(h1, 0.75, 0.75);
-
     rainbowGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
 
     let stops = 36;
@@ -627,14 +655,6 @@ function rainbow() {
     for (let i = 0; i < 36; i++) {
         rainbowGradient.addColorStop(`${i/stops}`, hsltorgb((i / stops * cycles) % 1, 1, 0.5));
     }
-
-    /*rainbowGradient.addColorStop("0", c3);
-    rainbowGradient.addColorStop("0.5", c2);
-    rainbowGradient.addColorStop("1.0", c1);*/
-
-    /*setTimeout(function () {
-        rainbow();
-    }, 10);*/
 }
 
 function openStrokeForm() {
@@ -647,5 +667,7 @@ function closeStrokeForm() {
 
 function changeStroke() {
     lineWidth = Math.floor(document.getElementById("strokeChoice").value / 2) + 2;
-    output.innerHTML = Math.floor((lineWidth - 2) * 2 / 10) + 1;
+    let val = Math.floor((lineWidth - 2) * 2 / 10) + 1;
+    output.innerHTML = val;
+    ctx.font = `${val*4 + 10}px Comic Sans MS`;
 }
