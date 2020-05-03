@@ -797,7 +797,6 @@ function changeOpacity() {
 }
 function opacityToHex(opacity){
     if (opacity<16){
-        console.log("im crazy");
         return `0${opacity.toString(16)}`;
     }
     return opacity.toString(16);
