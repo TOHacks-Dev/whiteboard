@@ -848,14 +848,21 @@ function closeChat() {
     document.getElementById("chat").style.display = "none";
   }
 function googleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-    .then(result => {
-        user = result.user;
-        document.getElementById("login-button").style.display = "none";
-        document.getElementById("open-button").style.display = "block";
-    })
-    .catch(console.log);
+    // const provider = new firebase.auth.GoogleAuthProvider();
+    // firebase.auth().signInWithPopup(provider)
+    // .then(result => {
+    //     user = result.user;
+    //     document.getElementById("login-button").style.display = "none";
+    //     document.getElementById("open-button").style.display = "block";
+    // })
+    // .catch(console.log);
+
+    document.getElementById("login-button").style.display = "none";
+    document.getElementById("open-button").style.display = "block";
+
+    user = {
+        "displayName": "ethan"
+    }
 }
 
 function pushMessage() {
