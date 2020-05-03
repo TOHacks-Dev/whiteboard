@@ -428,6 +428,24 @@ function reactKeyPressed(e) {
             changeTool('hand');
         } else if(e.key == 'w') {
             clearStrokes();
+        } else if(e.key == 'z') {
+            undo();
+        } else if(e.key == 'b') {
+            changeTool('brush');
+        } else if(e.key == 'l') {
+            changeTool('line');
+        } else if(e.key == 'r') {
+            changeTool('rectangle');
+        } else if(e.key == 'c') {
+            changeTool('circle');
+        } else if(e.key == 'e') {
+            changeTool('ellipse');
+        } else if(e.key == 'x') {
+            changeTool('polygon');
+        } else if(e.key == 'g') {
+            changeTool('rainbow');
+        } else if(e.key == 't') {
+            changeTool('text');
         }
     }
 }
