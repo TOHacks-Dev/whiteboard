@@ -37,6 +37,9 @@ let typingX = 0;
 let typingY = 0;
 let typingMessage = "";
 
+let pStrokeColor = "";
+let erasing = false;
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
@@ -115,6 +118,7 @@ function changeTool(toolClicked) {
     document.getElementById("hand").className = "";
     document.getElementById("rainbow").className = "";
     document.getElementById("text").className = "";
+    document.getElementById("eraser").className = "";
     document.getElementById(toolClicked).className = "selected";
 
     if (currentTool == "text" && typingMessage != "") {
@@ -131,6 +135,11 @@ function changeTool(toolClicked) {
 
         push();
     }
+    
+    if (erasing && toolClicked != "eraser") {
+        erasing = false;
+        strokeColor = pStrokeColor;
+    }
 
     currentTool = toolClicked;
 
@@ -145,6 +154,11 @@ function changeTool(toolClicked) {
     } else if (currentTool == "text") {
         canvas.style.cursor = "text";
         typingMessage = "";
+    } else if (currentTool == "eraser") {
+        currentTool = "brush";
+        erasing = true;
+        pStrokeColor = strokeColor;
+        strokeColor = "white";
     }
 }
 
