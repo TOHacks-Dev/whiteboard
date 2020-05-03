@@ -192,9 +192,9 @@ function getPolygon(shouldDraw) {
         }
         ctx.closePath();
     } else {
-        points = [(polygonPoints[0].x - xOffset) * zoom, (polygonPoints[0].y - yOffset) * zoom];
+        points = [(polygonPoints[0].x - xOffset)/zoom, (polygonPoints[0].y - yOffset)/zoom];
         for (let i = 1; i < polygonSides; i++) {
-            points.push((polygonPoints[i].x - xOffset) * zoom, (polygonPoints[i].y - yOffset) * zoom)
+            points.push((polygonPoints[i].x - xOffset)/zoom, (polygonPoints[i].y - yOffset)/zoom)
         }
     }
 
@@ -259,12 +259,12 @@ function drawCur() {
     for (let j = 1; j < currentStroke["points"].length; ++j) {
         ctx.beginPath();
         if (currentStroke["points"][j]["mDown"]) {
-            ctx.moveTo((currentStroke["points"][j - 1]["x"] + xOffset) * zoom, (currentStroke["points"][j - 1]["y"] + yOffset) * zoom);
+            ctx.moveTo(currentStroke["points"][j - 1]["x"]*zoom + xOffset, currentStroke["points"][j - 1]["y"]*zoom + yOffset);
         } else {
-            ctx.moveTo((currentStroke["points"][j]["x"] - 1 + xOffset) * zoom, (currentStroke["points"][j]["y"] + yOffset) * zoom);
+            ctx.moveTo(currentStroke["points"][j]["x"]*zoom - 1 + xOffset, currentStroke["points"][j]["y"]*zoom + yOffset);
         }
 
-        ctx.lineTo((currentStroke["points"][j]["x"] + xOffset) * zoom, (currentStroke["points"][j]["y"] + yOffset) * zoom);
+        ctx.lineTo(currentStroke["points"][j]["x"]*zoom + xOffset, currentStroke["points"][j]["y"]*zoom + yOffset);
         ctx.closePath();
         ctx.stroke();
     }
@@ -283,36 +283,36 @@ function draw() {
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
                     ctx.beginPath();
                     if (allPoints[i]["points"][j]["mDown"]) {
-                        ctx.moveTo((allPoints[i]["points"][j - 1]["x"] + xOffset) * zoom, (allPoints[i]["points"][j - 1]["y"] + yOffset) * zoom);
+                        ctx.moveTo(allPoints[i]["points"][j - 1]["x"]*zoom + xOffset, allPoints[i]["points"][j - 1]["y"]*zoom + yOffset);
                     } else {
-                        ctx.moveTo((allPoints[i]["points"][j]["x"] - 1 + xOffset) * zoom, (allPoints[i]["points"][j]["y"] + yOffset) * zoom);
+                        ctx.moveTo(allPoints[i]["points"][j]["x"]*zoom - 1 + xOffset, allPoints[i]["points"][j]["y"]*zoom + yOffset);
                     }
 
-                    ctx.lineTo((allPoints[i]["points"][j]["x"] + xOffset) * zoom, (allPoints[i]["points"][j]["y"] + yOffset) * zoom);
+                    ctx.lineTo(allPoints[i]["points"][j]["x"]*zoom + xOffset, allPoints[i]["points"][j]["y"]*zoom + yOffset);
                     ctx.closePath();
                     ctx.stroke();
                 }
                 ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
-                ctx.moveTo((allPoints[i]["points"][0] + xOffset) * zoom, (allPoints[i]["points"][1] + yOffset) * zoom);
-                ctx.lineTo((allPoints[i]["points"][2] + xOffset) * zoom, (allPoints[i]["points"][3] + yOffset) * zoom);
+                ctx.moveTo(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1] + yOffset);
+                ctx.lineTo(allPoints[i]["points"][2]*zoom + xOffset, allPoints[i]["points"][3] + yOffset);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "rectangle") {
-                ctx.strokeRect((allPoints[i]["points"][0] + xOffset) * zoom, (allPoints[i]["points"][1] + yOffset) * zoom, allPoints[i]["points"][2], allPoints[i]["points"][3]);
+                ctx.strokeRect(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
             } else if (allPoints[i]["shape"] == "circle") {
                 ctx.beginPath();
-                ctx.arc((allPoints[i]["points"][0] + xOffset) * zoom, (allPoints[i]["points"][1] + yOffset) * zoom, allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4]);
+                ctx.arc(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3], allPoints[i]["points"][4]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "ellipse") {
                 ctx.beginPath();
-                ctx.ellipse((allPoints[i]["points"][0] + xOffset) * zoom, (allPoints[i]["points"][1] + yOffset) * zoom, allPoints[i]["points"][2], allPoints[i]["points"][3], allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
+                ctx.ellipse(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom, allPoints[i]["points"][4], allPoints[i]["points"][5], allPoints[i]["points"][6]);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "polygon") {
                 ctx.beginPath();
-                ctx.moveTo((allPoints[i]["points"][0] + xOffset) * zoom, (allPoints[i]["points"][1] + yOffset) * zoom);
+                ctx.moveTo(allPoints[i]["points"][0]*zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset);
                 for (let j = 2; j < allPoints[i]["points"].length; j += 2) {
-                    ctx.lineTo((allPoints[i]["points"][j] + xOffset) * zoom, (allPoints[i]["points"][j + 1] + yOffset) * zoom);
+                    ctx.lineTo(allPoints[i]["points"][j]*zoom + xOffset, allPoints[i]["points"][j + 1]*zoom + yOffset);
                 }
                 ctx.closePath();
                 ctx.stroke();
@@ -367,12 +367,30 @@ function reactToMouseMove(e) {
 
 function reactToZoom(e) {
     event.preventDefault();
+
+    let desiredX = e.clientX;
+    let desiredY = e.clientY;
+    let newX = desiredX;
+    let newY = desiredY;
     
-    if (e.deltaY < 0) {
+    if (e.deltaY > 0) {
         zoom *= 9/10;
     } else {
-        zoom *= 10/9;
+        zoom /= 9/10;
     }
+
+    newX *= zoom;
+    newY *= zoom;
+
+    console.log(desiredX, desiredY);
+    newX += desiredX - newX;
+    console.log(newX, newY);
+
+
+    console.log(desiredX - newX, desiredY - newY);
+
+    // xOffset += desiredX - newX;
+    // yOffset += desiredY - newY;
 
     draw();
 }
@@ -388,16 +406,18 @@ function reactToMouseUp(e) {
     dragging = false;
     usingBrush = false;
 
+    // mousedown.x = allPoints[i]["points"][0]*zoom + xOffset
+
     if (currentTool == "brush") {
         points = currentStroke["points"];
     } else if (currentTool == "line") {
-        points = [mousedown.x - xOffset, mousedown.y - yOffset, loc.x - xOffset, loc.y - yOffset];
+        points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, (loc.x - xOffset)/zoom, (loc.y - yOffset)/zoom];
     } else if (currentTool == "rectangle") {
-        points = [shapeBoundingBox.left - xOffset, shapeBoundingBox.top - yOffset, shapeBoundingBox.width, shapeBoundingBox.height];
+        points = [(shapeBoundingBox.left - xOffset)/zoom, (shapeBoundingBox.top - yOffset)/zoom, shapeBoundingBox.width/zoom, shapeBoundingBox.height/zoom];
     } else if (currentTool == "circle") {
-        points = [mousedown.x - xOffset, mousedown.y - yOffset, shapeBoundingBox.width, 0, Math.PI * 2];
+        points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, shapeBoundingBox.width/zoom, 0, Math.PI * 2];
     } else if (currentTool == "ellipse") {
-        points = [mousedown.x - xOffset, mousedown.y - yOffset, shapeBoundingBox.width / 2, shapeBoundingBox.height / 2, Math.PI / 4, 0, Math.PI * 2];
+        points = [(mousedown.x - xOffset)/zoom, (mousedown.y - yOffset)/zoom, (shapeBoundingBox.width / 2)/zoom, (shapeBoundingBox.height / 2)/zoom, Math.PI / 4, 0, Math.PI * 2];
     } else if (currentTool == "polygon") {
         points = getPolygon(false);
     }
