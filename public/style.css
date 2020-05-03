@@ -349,6 +349,8 @@ input[type="range"]::-webkit-slider-thumb {
     list-style-type:none;
     margin: none;
     padding: 3px;
+    overflow: auto;
+    max-height: 100px;
   }
   /* Set a style for the submit/send button */
   .chat-popup .btn, .btn_cancel {

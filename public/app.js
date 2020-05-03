@@ -942,6 +942,8 @@ function updateMessages() {
     }
 
     currentMessages = allMessages;
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 function openPaletteForms() {
