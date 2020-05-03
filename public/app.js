@@ -44,6 +44,7 @@ let pStrokeColor = "";
 let erasing = false;
 
 let allMessages = []
+let currentMessages = []
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -694,6 +695,7 @@ document.addEventListener("DOMContentLoaded", event => {
         allPoints = data["strokes"];
         allMessages = data["messages"];
         draw();
+        updateMessages();
     })
 });
 
@@ -877,4 +879,16 @@ function pushMessage() {
     });
 
     messageBox.value = "";
+}
+
+function updateMessages() {
+    let chatBox = document.getElementById("chatBox");
+    
+    for (let i = currentMessages.length; i < allMessages.length; ++i) {
+        let item = document.createElement('li');
+        item.appendChild(document.createTextNode(`${allMessages[i][user]}: ${allMessages[i]["content"]}`));
+        chatBox.appendChild(item);
+    }
+
+    currentMessages = allMessages;
 }
