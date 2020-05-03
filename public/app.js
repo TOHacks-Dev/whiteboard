@@ -327,7 +327,8 @@ function drawCur() {
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = "#c4c4c4";
     let gridSize = 50;
@@ -596,6 +597,7 @@ function saveImage() {
     var imageFile = document.getElementById("img-file");
     imageFile.setAttribute("download", "whiteboard.png");
     imageFile.setAttribute("href", canvas.toDataURL());
+    imageFile.click();
 }
 
 function openImage() {
