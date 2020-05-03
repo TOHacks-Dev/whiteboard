@@ -374,30 +374,18 @@ function reactToMouseMove(e) {
 
 function reactToZoom(e) {
     event.preventDefault();
-
-    let desiredX = e.clientX;
-    let desiredY = e.clientY;
-    let newX = desiredX;
-    let newY = desiredY;
     
+    let oldZoom = zoom;
     if (e.deltaY > 0) {
         zoom *= 9/10;
     } else {
         zoom /= 9/10;
     }
 
-    newX *= zoom;
-    newY *= zoom;
+    let scaleChange = zoom - oldZoom;
 
-    console.log(desiredX, desiredY);
-    newX += desiredX - newX;
-    console.log(newX, newY);
-
-
-    console.log(desiredX - newX, desiredY - newY);
-
-    // xOffset += desiredX - newX;
-    // yOffset += desiredY - newY;
+    xOffset += e.clientX * scaleChange * -1;
+    yOffset += e.clientY * scaleChange * -1;
 
     draw();
 }
