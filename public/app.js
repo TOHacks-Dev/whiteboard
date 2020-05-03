@@ -89,7 +89,7 @@ function setupCanvas() {
     canvas.addEventListener("wheel", reactToZoom);
     document.addEventListener("keypress", reactKeyPressed);
     document.addEventListener("keydown", reactKeyDown);
-    
+
     ctx.font = "30px Comic Sans MS";
 
     rainbow();
@@ -125,7 +125,7 @@ function changeTool(toolClicked) {
             "id": ids[ids.length - 1],
             "strokeWeight": lineWidth,
             "colour": strokeColor,
-            "points": [(typingX - xOffset)/zoom, (typingY - yOffset)/zoom],
+            "points": [(typingX - xOffset) / zoom, (typingY - yOffset) / zoom],
             "text": typingMessage
         });
 
@@ -332,7 +332,7 @@ function draw() {
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
             setStrokeStyle(allPoints[i]["colour"]);
-            ctx.lineWidth = allPoints[i]["strokeWeight"]*zoom;
+            ctx.lineWidth = allPoints[i]["strokeWeight"] * zoom;
             if (allPoints[i]["shape"] == "brush") {
                 ctx.lineJoin = "round";
                 for (let j = 1; j < allPoints[i]["points"].length; ++j) {
@@ -350,8 +350,8 @@ function draw() {
                 ctx.lineJoin = "miter";
             } else if (allPoints[i]["shape"] == "line") {
                 ctx.beginPath();
-                ctx.moveTo(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1]*zoom + yOffset);
-                ctx.lineTo(allPoints[i]["points"][2] * zoom + xOffset, allPoints[i]["points"][3]*zoom + yOffset);
+                ctx.moveTo(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset);
+                ctx.lineTo(allPoints[i]["points"][2] * zoom + xOffset, allPoints[i]["points"][3] * zoom + yOffset);
                 ctx.stroke();
             } else if (allPoints[i]["shape"] == "rectangle") {
                 ctx.strokeRect(allPoints[i]["points"][0] * zoom + xOffset, allPoints[i]["points"][1] * zoom + yOffset, allPoints[i]["points"][2] * zoom, allPoints[i]["points"][3] * zoom);
@@ -383,8 +383,7 @@ function reactToMouseDown(e) {
     canvas.style.cursor = "crosshair";
     if (currentTool == "hand") {
         canvas.style.cursor = "grabbing";
-    }
-    else if(currentTool=="text"){
+    } else if (currentTool == "text") {
         canvas.style.cursor = "text";
     }
     loc = getMousePosition(e.clientX, e.clientY);
@@ -433,34 +432,34 @@ function reactKeyPressed(e) {
     if (currentTool == "text") {
         if (e.keyCode >= 32 && e.keyCode <= 126) {
             typingMessage += e.key;
-        
+
             draw();
 
             setFillStyle(strokeColor);
             ctx.fillText(typingMessage, typingX, typingY);
         }
     } else {
-        if(e.key == 'h') {
+        if (e.key == 'h') {
             changeTool('hand');
-        } else if(e.key == 'w') {
+        } else if (e.key == 'w') {
             clearStrokes();
-        } else if(e.key == 'z') {
+        } else if (e.key == 'z') {
             undo();
-        } else if(e.key == 'b') {
+        } else if (e.key == 'b') {
             changeTool('brush');
-        } else if(e.key == 'l') {
+        } else if (e.key == 'l') {
             changeTool('line');
-        } else if(e.key == 'r') {
+        } else if (e.key == 'r') {
             changeTool('rectangle');
-        } else if(e.key == 'c') {
+        } else if (e.key == 'c') {
             changeTool('circle');
-        } else if(e.key == 'e') {
+        } else if (e.key == 'e') {
             changeTool('ellipse');
-        } else if(e.key == 'x') {
+        } else if (e.key == 'x') {
             changeTool('polygon');
-        } else if(e.key == 'g') {
+        } else if (e.key == 'g') {
             changeTool('rainbow');
-        } else if(e.key == 't') {
+        } else if (e.key == 't') {
             changeTool('text');
         }
     }
@@ -492,7 +491,7 @@ function reactToZoom(e) {
 
     xOffset = e.clientX - zoom * (e.clientX - xOffset) / oldZoom;
     yOffset = e.clientY - zoom * (e.clientY - yOffset) / oldZoom;
-    
+
     ctx.font = `${((Math.floor((lineWidth - 2) * 2 / 10) + 1)*4 + 10)*zoom}px Comic Sans MS`;
 
     draw();
@@ -520,7 +519,7 @@ function reactToMouseUp(e) {
             "id": ids[ids.length - 1],
             "strokeWeight": lineWidth,
             "colour": strokeColor,
-            "points": [(typingX - xOffset)/zoom, (typingY - yOffset)/zoom],
+            "points": [(typingX - xOffset) / zoom, (typingY - yOffset) / zoom],
             "text": typingMessage
         });
 
@@ -532,7 +531,7 @@ function reactToMouseUp(e) {
     if (currentTool == "brush") {
         points = currentStroke["points"];
     } else if (currentTool == "line") {
-        points = [(mousedown.x - xOffset) / zoom, (mousedown.y - yOffset)/zoom, (loc.x - xOffset) / zoom, (loc.y - yOffset)/zoom];
+        points = [(mousedown.x - xOffset) / zoom, (mousedown.y - yOffset) / zoom, (loc.x - xOffset) / zoom, (loc.y - yOffset) / zoom];
     } else if (currentTool == "rectangle") {
         points = [(shapeBoundingBox.left - xOffset) / zoom, (shapeBoundingBox.top - yOffset) / zoom, shapeBoundingBox.width / zoom, shapeBoundingBox.height / zoom];
     } else if (currentTool == "circle") {
@@ -552,7 +551,7 @@ function reactToMouseUp(e) {
         allPoints.push({
             "shape": currentTool,
             "id": ids[ids.length - 1],
-            "strokeWeight": lineWidth,
+            "strokeWeight": lineWidth / zoom,
             "colour": strokeColor,
             "points": points
         });
