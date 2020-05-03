@@ -74,7 +74,7 @@ function setupCanvas() {
     paletteImg.onload = drawPalette;
     paletteImg.src = "images/palette.png";
 
-    ctx.strokeStyle = strokeColor;
+    setStrokeStyle(strokeColor);
     ctx.lineWidth = lineWidth;
     let canvasSizeData = canvas.getBoundingClientRect();
     canvas.width = canvasWidth = window.innerWidth;
@@ -83,6 +83,8 @@ function setupCanvas() {
     canvas.addEventListener("mousemove", reactToMouseMove);
     canvas.addEventListener("mouseup", reactToMouseUp);
     canvas.addEventListener("wheel", reactToZoom);
+
+    rainbow();
 }
 
 function drawPalette() {
@@ -104,10 +106,16 @@ function changeTool(toolClicked) {
     document.getElementById("ellipse").className = "";
     document.getElementById("polygon").className = "";
     document.getElementById("hand").className = "";
+    document.getElementById("rainbow").className = "";
     document.getElementById(toolClicked).className = "selected";
     currentTool = toolClicked;
-    if(currentTool=="brush"){
+
+    if (currentTool == "brush") {
         openStrokeForm();
+    }
+    if (currentTool == "rainbow") {
+        strokeColor = "rainbow";
+        currentTool = "brush";
     }
 }
 
@@ -193,8 +201,17 @@ function getPolygon(shouldDraw) {
     return points;
 }
 
+function setStrokeStyle(strokeColor) {
+
+    if (strokeColor == "rainbow") {
+        ctx.strokeStyle = rainbowGradient;
+    } else {
+        ctx.strokeStyle = strokeColor;
+    }
+}
+
 function drawRubberbandShape(loc) {
-    ctx.strokeStyle = strokeColor;
+    setStrokeStyle(strokeColor);
     ctx.fillStyle = fillColor;
     if (currentTool == "brush") {
         drawCur();
@@ -236,7 +253,7 @@ function addBrushPoint(x, y, mouseDown) {
 }
 
 function drawCur() {
-    ctx.strokeStyle = currentStroke["colour"];
+    setStrokeStyle(currentStroke["colour"]);
     ctx.lineWidth = currentStroke["strokeWeight"];
     ctx.lineJoin = "round";
     for (let j = 1; j < currentStroke["points"].length; ++j) {
@@ -259,7 +276,7 @@ function draw() {
 
     if (allPoints != undefined) {
         for (let i = 0; i < allPoints.length; ++i) {
-            ctx.strokeStyle = allPoints[i]["colour"];
+            setStrokeStyle(allPoints[i]["colour"]);
             ctx.lineWidth = allPoints[i]["strokeWeight"];
             if (allPoints[i]["shape"] == "brush") {
                 ctx.lineJoin = "round";
@@ -395,7 +412,7 @@ function reactToMouseUp(e) {
             "colour": strokeColor,
             "points": points
         });
-    
+
         push();
     }
 }
@@ -513,20 +530,85 @@ function closeColorForm() {
     document.getElementById("colorForm").style.display = "none";
 }
 
-  function changeColor() {
+function changeColor() {
     strokeColor = document.getElementById("colorChoice").value;
     drawPalette();
-  }
+}
 
-  function openStrokeForm() {
+function hsltorgb(h, s, l) {
+    var r, g, b;
+    if (s == 0) {
+        r = g = b = l; // achromatic
+    } else {
+        var hue2rgb = function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = 255 * hue2rgb(p, q, h + 1 / 3);
+        g = 255 * hue2rgb(p, q, h);
+        b = 255 * hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
+}
+
+let h1 = 0,
+    h2 = 0.1,
+    h3 = 0.2;
+let rainbowGradient;
+
+function rainbow() {
+
+    h1 += 0.001;
+    if (h1 >= 1) {
+        h1 -= 1;
+    }
+    h2 += 0.001;
+    if (h2 >= 1) {
+        h2 -= 1;
+    }
+    h3 += 0.001;
+    if (h3 >= 1) {
+        h3 -= 1;
+    }
+
+    var c3 = hsltorgb(h3, 0.75, 0.75);
+    var c2 = hsltorgb(h2, 0.75, 0.75);
+    var c1 = hsltorgb(h1, 0.75, 0.75);
+
+    rainbowGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+
+    let stops = 36;
+    let cycles = 3;
+    for (let i = 0; i < 36; i++) {
+        rainbowGradient.addColorStop(`${i/stops}`, hsltorgb((i / stops * cycles) % 1, 1, 0.5));
+    }
+
+    /*rainbowGradient.addColorStop("0", c3);
+    rainbowGradient.addColorStop("0.5", c2);
+    rainbowGradient.addColorStop("1.0", c1);*/
+
+    /*setTimeout(function () {
+        rainbow();
+    }, 10);*/
+}
+
+function openStrokeForm() {
     document.getElementById("strokeForm").style.display = "block";
-  }
-  
-  function closeStrokeForm() {
-    document.getElementById("strokeForm").style.display = "none";
-  }
+}
 
-  function changeStroke() {
-    lineWidth = Math.floor(document.getElementById("strokeChoice").value/2)+2;
-    output.innerHTML = Math.floor((lineWidth-2)*2/10)+1;
-  }
+function closeStrokeForm() {
+    document.getElementById("strokeForm").style.display = "none";
+}
+
+function changeStroke() {
+    lineWidth = Math.floor(document.getElementById("strokeChoice").value / 2) + 2;
+    output.innerHTML = Math.floor((lineWidth - 2) * 2 / 10) + 1;
+}
