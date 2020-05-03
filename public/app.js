@@ -712,7 +712,6 @@ function closeColorForm() {
 function changeColor() {
     let temp = strokeColor.substring(7);
     strokeColor = document.getElementById("colorChoice").value+temp;
-    console.log("here");
     drawPalette();
 }
 
@@ -835,4 +834,15 @@ function opacityToHex(opacity) {
 function openPaletteForms(){
     openColorForm()
     openOpacityForm();
+}
+function openChat() {
+    document.getElementById("chat").style.display = "block";
+  }
+  function closeChat() {
+    document.getElementById("chat").style.display = "none";
+  }
+
+function googleLogin(){
+    document.getElementById("login-button").style.display = "none";
+    document.getElementById("open-button").style.display = "block";
 }

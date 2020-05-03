@@ -131,7 +131,19 @@
 
     </div>
       <span style="font-size:30px;cursor:pointer;position:absolute;left:10px;top:10px;user-select:none;" onclick="openNav()">&#9776;</span>
-      <!--<button onclick="googleLogin()">Login with Google</button>-->
+      <button class="login-button" id = "login-button" onclick="googleLogin()">Login</button>
+      <button class="open-button" id = "open-button" onclick="openChat()">Chat</button>
+      <div class="chat-popup" id="chat">
+          <h1>Chat</h1>
+          <a href="#" class="closeChat" onclick="closeChat()">&times;</a>
+      
+          <label for="msg"><b>Message</b></label>
+          <textarea placeholder="Type message.." name="msg" required></textarea>
+      
+          <button type="submit" class="btn">Send</button>
+          <button type="button" class="btn cancel" onclick="closeChat()">Close</button>
+        </form>
+      </div>
       <br>
       <canvas id="my-canvas">
       </canvas>
