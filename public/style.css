@@ -96,8 +96,11 @@ body {
     padding: 0px;
     z-index: -3;
 }
-
+p{
+    margin: 2px;
+} 
 .colorFormPopup {
+    margin: 2px;
     display: none;
     position: fixed;
     top: 275px;
@@ -112,3 +115,41 @@ body {
     background-color: #E2e2e200;
     font-size: 36px;
 }
+
+.strokeWeightPopup {
+    margin: 2px;
+    display: none;
+    position: fixed;
+    top: 320px;
+    left: 50px;
+    border: none;
+    z-index: 9000;
+  }
+.strokeWeightPopup .closeStrokePicker {
+    text-decoration: none;
+    color: #000;
+    background-color: #E2e2e200;
+    font-size: 36px;
+}
+
+input[type="range"]{
+    -webkit-appearance:none;
+    width:160px;
+    height:20px;
+    background: linear-gradient(to right, #a9a9a9 0%, #a9a9a9 100%);
+    background-size:150px 10px;
+    background-position:center;
+    background-repeat:no-repeat;
+    overflow:hidden;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    background:#2b2d2f;
+    position:relative;
+    z-index:3;
+    box-shadow:0 0 5px 0 rgba(0,0,0,0.4);
+  }
